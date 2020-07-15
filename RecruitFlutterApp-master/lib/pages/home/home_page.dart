@@ -4,6 +4,8 @@ import 'package:recruit_app/model/topictab_model.dart';
 import 'package:recruit_app/pages/city_page.dart';
 import 'package:recruit_app/pages/home/search_bar.dart';
 import 'package:recruit_app/pages/jobs/city_filter.dart';
+import 'package:recruit_app/pages/select_city.dart';
+import 'package:recruit_app/pages/share_helper.dart';
 import 'package:recruit_app/pages/utils/screen.dart';
 import 'home_headplan.dart';
 import 'home_joblist.dart';
@@ -35,11 +37,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   bool _isTabbarItemClick = false;
   bool _isNavgationBarHidden = false;
   bool isScrool=false;
-  void _rightTabItemPressed() {
-    Navigator.push(
+  String  _city;
+  void _rightTabItemPressed() async{
+  String  rety = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CityPage()));
+            builder: (context) => SelectCity()));
+  if(rety != null){
+    setState(() {
+      _city = rety;
+    });
+  }
+
   }
 
   void _leftTabItemPressed() {
@@ -74,7 +83,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    _city = ShareHelper.getCity() == ""?"全部":ShareHelper.getCity();
     _mainScrollable =true;
     _contentScrollable =false;
     // 滚动视图添加监听
@@ -241,7 +250,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       ),
                       Center(
                           child:  Text(
-                            "武汉",
+                            _city,
                             style: TextStyle(
                               color: Color.lerp(Colors.white, Colors.black87, _navAplpha),
                               fontSize: 16

@@ -15,8 +15,8 @@ class JobRowItem extends StatelessWidget {
   final bool lastItem;
   final bool isJi;
   final bool isBz;
-
-  const JobRowItem({Key key, this.job, this.index, this.lastItem,this.isJi,this.isBz})
+    List tags;
+   JobRowItem({Key key, this.job, this.index, this.lastItem,this.isJi,this.isBz,})
       : super(key: key);
 
 
@@ -46,10 +46,10 @@ class JobRowItem extends StatelessWidget {
 
 
   Widget _getTip(){
-    List tags = ["四川成都","不限经验","随时上岗"];
+    tags = job["companyDetList"];
     List<Widget> tipWidget=[];
     List<Widget> columWidget=[];
-    if(tags.length>0){
+    if(tags == null|| tags.length>0 ){
 
       for (var item in tags){
         if(item == " "||item ==""){
@@ -154,7 +154,7 @@ class JobRowItem extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          job["company"].toString(),
+                          job["companyName"].toString(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

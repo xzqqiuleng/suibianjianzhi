@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/model/job_list.dart';
+import 'package:recruit_app/pages/event_heper.dart';
 import 'package:recruit_app/pages/jobs/city_filter.dart';
 import 'package:recruit_app/pages/jobs/job_company_search.dart';
 import 'package:recruit_app/pages/jobs/job_detail.dart';
@@ -123,13 +125,45 @@ class JobBodyList extends StatefulWidget{
 class _JobBodyListState extends State<JobBodyList> with AutomaticKeepAliveClientMixin{
   RefreshController _refreshController =
   RefreshController(initialRefresh: true);
-  int page;
+  int page=1;
   List data =List();
+  String cityNum="0";
+  String saNum="0";
+  String jlNum="0";
+  String url = "http://www.zaojiong.com/job/list/0-0-0-0_0_0_0_0_0_0_0-0-0-0-1.html";
+  StreamSubscription  _eventRefreshSub;
+ @override
+void initState() {
+  // TODO: implement initState
+  super.initState();
+  url = "http://www.zaojiong.com/job/list/0-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
+  _eventSub();
+}
+  void _eventSub(){
 
+    _eventRefreshSub= eventBus.on<JobRefreshEvent>().listen((event) {
+       if(event.type == 0){
+         cityNum = event.txt;
+         saNum = "0";
+         jlNum = "0";
+
+       }else if(event.type == 1){
+         cityNum = "0";
+         saNum = event.txt;
+         jlNum = "0";
+       }else{
+         cityNum = "0";
+         saNum = "0";
+         jlNum = event.txt;
+       }
+
+       _OnRefresh();
+    });
+  }
   _OnRefresh(){
-    page=0;
-
-    new MiviceRepository().getWorkList(page,widget.type).then((value) {
+    page=1;
+    url = "http://www.zaojiong.com/job/list/0-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
+    new MiviceRepository().getJzList(url).then((value) {
       var reponse = json.decode(value.toString());
       if(reponse["status"] == "success"){
         data.clear();
@@ -139,12 +173,14 @@ class _JobBodyListState extends State<JobBodyList> with AutomaticKeepAliveClient
         });
         print(data);
         page++;
-        _refreshController.refreshCompleted();
+
       }
+      _refreshController.refreshCompleted();
     });
   }
   _loadMore(){
-    new MiviceRepository().getWorkList(page,widget.type).then((value) {
+    url = "http://www.zaojiong.com/job/list/0-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
+    new MiviceRepository().getJzList(url).then((value) {
       var reponse = json.decode(value.toString());
       if(reponse["status"] == "success"){
         List  loaddata = reponse["result"];
@@ -153,8 +189,9 @@ class _JobBodyListState extends State<JobBodyList> with AutomaticKeepAliveClient
         });
 
         page++;
-        _refreshController.loadComplete();
+
       }
+      _refreshController.loadComplete();
     });
   }
   @override
@@ -176,11 +213,11 @@ class _JobBodyListState extends State<JobBodyList> with AutomaticKeepAliveClient
                     job: data[index],
                     index: index,
                     lastItem: index == data.length - 1),
-                onTap: () {
+                  onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => JobDetail(data[index]["job_id"]),
+                        builder: (context) => JobDetail(0,url: data[index]["jobHref"]),
                       ));
                 });
           }

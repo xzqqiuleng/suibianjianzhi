@@ -3,8 +3,9 @@ class CitysModel {
   String currentCity;
   List<String> citys;
   List<String> historyCitys;
+  List<String> allCitys;
 
-  CitysModel({this.name,this.currentCity,this.citys,this.historyCitys}):super();
+  CitysModel({this.name,this.currentCity,this.citys,this.historyCitys,this.allCitys}):super();
 
   CitysModel.fromJson(Map data) {
     name = data["name"];

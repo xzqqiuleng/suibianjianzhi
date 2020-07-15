@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/jobs/job_list.dart';
 import 'package:recruit_app/pages/utils/screen.dart';
+import 'package:recruit_app/pages/utils/select_salary.dart';
+import 'package:recruit_app/pages/utils/select_xl.dart';
 
 
 class HomeJobList extends StatefulWidget {
@@ -71,10 +73,15 @@ class _HomeJobListState extends State<HomeJobList> with SingleTickerProviderStat
          child: Row(
            children: <Widget>[
              GestureDetector(
+               onTap: ()=>Navigator.push(
+                   context,
+                   MaterialPageRoute(
+                       builder: (context) => SelectSalary())),
                child: Container(
 
                  child: Stack(
                    children: <Widget>[
+
                      Container(
                        alignment: Alignment.center,
                        width: 50,
@@ -84,10 +91,48 @@ class _HomeJobListState extends State<HomeJobList> with SingleTickerProviderStat
                          borderRadius: BorderRadius.circular(2)
                        ),
                        child: Text(
-                           "刷选",
+                           "薪资",
                          style: TextStyle(
                            color: Colours.app_main,
                            fontSize: 12
+                         ),
+                       ),
+                     ),
+                     Positioned(
+                       bottom: 4,
+                       right: 4,
+                       child: Image.asset("images/sanjiao.png",width: 5,height: 5,),
+                     )
+                   ],
+                 ),
+               ),
+             ),
+             SizedBox(
+               width: 16,
+             ),
+             GestureDetector(
+               onTap: ()=>Navigator.push(
+                   context,
+                   MaterialPageRoute(
+                       builder: (context) => SelectXl())),
+               child: Container(
+
+                 child: Stack(
+                   children: <Widget>[
+
+                     Container(
+                       alignment: Alignment.center,
+                       width: 50,
+                       height: 24,
+                       decoration: BoxDecoration(
+                           color: Colours.app_main.withOpacity(0.2),
+                           borderRadius: BorderRadius.circular(2)
+                       ),
+                       child: Text(
+                         "学历",
+                         style: TextStyle(
+                             color: Colours.app_main,
+                             fontSize: 12
                          ),
                        ),
                      ),

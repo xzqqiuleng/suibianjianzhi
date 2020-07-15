@@ -15,7 +15,8 @@ import 'job_row_item.dart';
 
 class JobDetail extends StatefulWidget {
   int id;
-  JobDetail(this.id);
+  String url;
+  JobDetail(this.id,{this.url});
   @override
   _JobDetailState createState() {
     // TODO: implement createState
@@ -24,134 +25,128 @@ class JobDetail extends StatefulWidget {
 }
 //这次基础款结帐一次，以后每次大版本更新再另算（包括新需求，新模块）。小功能的话，修bug免费。
 class _JobDetailState extends State<JobDetail> {
-  Map infors ;
+  Map jobInfo ;
   List datalist=List() ;
-  List<String> labels;
+  List<dynamic> labels;
   List<Widget> itemWidgetList=[];
   List<Widget> contentWidget=[];
   String userImg="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2519824424,1132423651&fm=26&gp=0.jpg";
   String user="HR发布";
-  Map summary;
-  Map com_label;
+  Map company;
+  String jobDes;
+  Map linkMethod;
   String address = "暂无地址";
   String compay_desc = "暂无公司信息";
   _loadData(){
 
- if(widget.id == null){
-   widget.id = 113546932;
- }
-    new MiviceRepository().getJobDetail(widget.id).then((value) {
+     new MiviceRepository().getJZDetail(widget.url).then((value) {
       var reponse = json.decode(value.toString());
       if(reponse["status"] == "success"){
         var   data = reponse["result"];
 
         print(data);
         setState(() {
-          infors = data["info"];  //"com_id" -> 10057  "job_id" -> 120587312
-          datalist = data["jobs"];
-           summary = json.decode(infors["summary"].toString());
-
-           if(infors["com_label"] !=null && infors["com_label"] != ""){
-             com_label = json.decode(infors["com_label"].toString());
-           }
-
-      print(infors["company_img"]);
-
-          labels = infors["label"].toString().split("|");
-
-          if(infors["pub_img"] == ""){
-            userImg = infors["mook_img"];
-          }else{
-            userImg = infors["pub_img"];
-          }
-          if(infors["pub_person"] != ""){
-            user = infors["pub_person"];
-          }
+          jobInfo = data["jobInfo"];  //"com_id" -> 10057  "job_id" -> 120587312
+          datalist = data["otherJob"];
+          company = data["company"];
+          jobDes = data["jobDes"].toString();
+          linkMethod = data["linkMethod"];
+        for(var intem in company["label"]){
+         if(compay_desc == "暂无公司信息"){
+           compay_desc =intem;
+         }else{
+           compay_desc = compay_desc+"·"+intem;
+         }
+        }
           _getLabel();
-          _getContent();
+//          _getContent();
         });
 
       }
     });
   }
-  Widget _getTip(){
-  List<Widget> tipWidget=[];
-  List<Widget> columWidget=[];
-  columWidget.add(SizedBox(height: 10));
-     if(infors != null &&infors["tip"] != "" &&infors["tip"] != "无"){
-       List<String>tips = infors["tip"].toString().split(" ");
-       columWidget.add(Text("福利待遇",
-           maxLines: 1,
-           overflow: TextOverflow.ellipsis,
-           style: const TextStyle(
-               wordSpacing: 1,
-               letterSpacing: 1,
-               fontSize: 16,
-               fontWeight: FontWeight.bold,
-               color: Color.fromRGBO(37, 38, 39, 1))));
-       columWidget.add(SizedBox(height: 12));
-       for (var item in tips){
-         if(item == " "||item ==""){
-           continue;
-         }
-         tipWidget.add( TextTagWidget("$item",
-           backgroundColor: Colors.white,
-           margin: EdgeInsets.fromLTRB(0, 0, 8, 8),
-           padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
-           borderRadius: 2,
-           borderColor: Color(0xFFF0F0F0),
-           textStyle: TextStyle(
-               color: Colors.black87,
-               fontSize: 14
-           ),
-         ));
-       }
-
-       columWidget.add(Wrap(children: tipWidget));
-       columWidget.add(SizedBox(height: 18));
-
-     }else{
-       columWidget.add(Container(height: 0,));
-     }
-
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.start,
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: columWidget,
-  );
-  }
-  Widget _getContent(){
-
-   summary.forEach((key, value) {
-      if(key != "公司信息"){
-        contentWidget.add( Text(key.toString(),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-                wordSpacing: 1,
-                letterSpacing: 1,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color.fromRGBO(37, 38, 39, 1))));
-        contentWidget.add(SizedBox(
-          height: 8,
-        ));
-        contentWidget.add(Html(data: value.toString().replaceAll("微信分享", "").replaceAll("地图", "")));
-      }
-
-   });
-   if(com_label != null && com_label.length>0){
-     compay_desc = "";
-     com_label.forEach((key, value) {
-       if(key.toString().contains("地")){
-         address = com_label[key].toString();
-       }
-       compay_desc = compay_desc+ com_label[key]+"·";
-     });
-   }
-
-  }
+//  Widget _getTip(){
+//  List<Widget> tipWidget=[];
+//  List<Widget> columWidget=[];
+//  columWidget.add(SizedBox(height: 10));
+//     if(infors != null &&infors["tip"] != "" &&infors["tip"] != "无"){
+//       List<String>tips = infors["tip"].toString().split(" ");
+//       columWidget.add(Text("福利待遇",
+//           maxLines: 1,
+//           overflow: TextOverflow.ellipsis,
+//           style: const TextStyle(
+//               wordSpacing: 1,
+//               letterSpacing: 1,
+//               fontSize: 16,
+//               fontWeight: FontWeight.bold,
+//               color: Color.fromRGBO(37, 38, 39, 1))));
+//       columWidget.add(SizedBox(height: 12));
+//       for (var item in tips){
+//         if(item == " "||item ==""){
+//           continue;
+//         }
+//         tipWidget.add( TextTagWidget("$item",
+//           backgroundColor: Colors.white,
+//           margin: EdgeInsets.fromLTRB(0, 0, 8, 8),
+//           padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+//           borderRadius: 2,
+//           borderColor: Color(0xFFF0F0F0),
+//           textStyle: TextStyle(
+//               color: Colors.black87,
+//               fontSize: 14
+//           ),
+//         ));
+//       }
+//
+//       columWidget.add(Wrap(children: tipWidget));
+//       columWidget.add(SizedBox(height: 18));
+//
+//     }else{
+//       columWidget.add(Container(height: 0,));
+//     }
+//
+//  return Column(
+//    mainAxisAlignment: MainAxisAlignment.start,
+//    crossAxisAlignment: CrossAxisAlignment.stretch,
+//    children: columWidget,
+//  );
+//  }
+////  Widget _getContent(){
+//
+//   summary.forEach((key, value) {
+//      if(key != "公司信息"){
+//        contentWidget.add( Text(key.toString(),
+//            maxLines: 1,
+//            overflow: TextOverflow.ellipsis,
+//            style: const TextStyle(
+//                wordSpacing: 1,
+//                letterSpacing: 1,
+//                fontSize: 16,
+//                fontWeight: FontWeight.bold,
+//                color: Color.fromRGBO(37, 38, 39, 1))));
+//        contentWidget.add(SizedBox(
+//          height: 8,
+//        ));
+//        contentWidget.add(Html(data: value.toString().replaceAll("微信分享", "").replaceAll("地图", "")));
+//      }
+//
+//   });
+//   if(com_label != null && com_label.length>0){
+//     compay_desc = "";
+//     com_label.forEach((key, value) {
+//       if(key.toString().contains("地")){
+//         address = com_label[key].toString();
+//       }
+//       compay_desc = compay_desc+ com_label[key]+"·";
+//     });
+//   }
+//
+//   for( var item in )
+//
+//  }
   Widget _getLabel(){
+    itemWidgetList.add(Text(""));
+    labels = jobInfo["label"];
     if(labels != null && labels.length >0){
 
 
@@ -171,6 +166,7 @@ class _JobDetailState extends State<JobDetail> {
       }
 
     }
+
   }
  @override
   void initState() {
@@ -227,7 +223,7 @@ class _JobDetailState extends State<JobDetail> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      Text(infors == null? "":infors["title"],
+                      Text(jobInfo == null? "":jobInfo["title"],
 
                           style: const TextStyle(
                               wordSpacing: 1,
@@ -238,7 +234,7 @@ class _JobDetailState extends State<JobDetail> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text(infors == null? "":infors["salary"],
+                      Text(jobInfo == null? "":jobInfo["salary"],
                           style: const TextStyle(
                               wordSpacing: 1,
                               letterSpacing: 1,
@@ -255,7 +251,7 @@ class _JobDetailState extends State<JobDetail> {
                          width: 4,
                        ),
                        Text(
-                         "2020-3-20",
+                         linkMethod== null||linkMethod["online_time"]==null ?"":linkMethod["online_time"],
                          style: TextStyle(
                            color: Color(0xff515151)
                          ),
@@ -268,7 +264,7 @@ class _JobDetailState extends State<JobDetail> {
                          width: 4,
                        ),
                        Text(
-                         "2",
+                         linkMethod== null||linkMethod["put_num"]==null  ?"":  linkMethod["put_num"],
                          style: TextStyle(
                              color: Color(0xff515151)
                          ),
@@ -281,7 +277,7 @@ class _JobDetailState extends State<JobDetail> {
                          width: 4,
                        ),
                        Text(
-                         "3",
+                         linkMethod== null ||linkMethod["reply_rate"]==null ?"":  linkMethod["reply_rate"],
                          style: TextStyle(
                              color: Color(0xff515151)
                          ),
@@ -309,11 +305,7 @@ class _JobDetailState extends State<JobDetail> {
                         height: 2,
                         margin: EdgeInsets.only(top: 15, bottom: 20),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: contentWidget,
-                      ),
+                  Html(data: jobDes.toString()),
 
                       Container(
                         color: Color.fromRGBO(242, 242, 242, 1),
@@ -339,8 +331,7 @@ class _JobDetailState extends State<JobDetail> {
                             ClipRRect(
                               borderRadius:
                               BorderRadius.all(Radius.circular(5)),
-                              child: Image.network(
-                                  (infors == null|| !infors["company_img"].toString().contains("http"))?Constant.deault_compay:infors["company_img"],
+                              child: Image.network("http://www.zaojiong.com/data/logo/20170418/14906489056.PNG",
                                   width: 50,
                                   height: 50,
                                   fit: BoxFit.cover),
@@ -351,7 +342,7 @@ class _JobDetailState extends State<JobDetail> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(infors == null?"":infors["company"],
+                                    Text(company == null?"":company["name"],
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -379,7 +370,7 @@ class _JobDetailState extends State<JobDetail> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CompanyDetail(infors["com_id"])));
+                                  builder: (context) => CompanyDetail(company["href"])));
                         },
                       ),
                       Container(
@@ -629,7 +620,7 @@ class _JobDetailState extends State<JobDetail> {
                         if (datalist.length >0 && index < datalist.length) {
                           return GestureDetector(
                               behavior: HitTestBehavior.opaque,
-                              child: JobDetailRowItem(
+                              child: JobDetailItem(
                                   job: datalist[index],
                                   index: index,
                                   lastItem: index == datalist.length - 1),
@@ -676,14 +667,14 @@ class _JobDetailState extends State<JobDetail> {
         ));
   }
 }
-class JobDetailRowItem extends StatelessWidget {
+class JobDetailItem extends StatelessWidget {
   final Map<String,dynamic> job;
   final int index;
   final bool lastItem;
   final bool isJi;
   final bool isBz;
-
-  const JobDetailRowItem({Key key, this.job, this.index, this.lastItem,this.isJi,this.isBz})
+  List tags;
+  JobDetailItem({Key key, this.job, this.index, this.lastItem,this.isJi,this.isBz,})
       : super(key: key);
 
 
@@ -699,235 +690,157 @@ class JobDetailRowItem extends StatelessWidget {
         ),
       );
     }else{
-      return Container(
-        alignment: Alignment.center,
-        height: 28,
-        width: 28,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color:Colours.slRandomColor()
-        ),
-        child: Text(
-          imgUrl,
-          style: TextStyle(
-              fontSize: 10,
-              color: Colors.white
-          ),
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(ScreenUtil().setWidth(28)),
+        child: Image.network(
+          Constant.deault_compay,
+          width: ScreenUtil().setWidth(56),
+          height: ScreenUtil().setWidth(56),
+          fit: BoxFit.cover,
         ),
       );
     }
   }
 
+
+  Widget _getTip(){
+    tags = job["label"];
+    List<Widget> tipWidget=[];
+    List<Widget> columWidget=[];
+    if(tags == null|| tags.length>0 ){
+
+      for (var item in tags){
+        if(item == " "||item ==""){
+          continue;
+        }
+        tipWidget.add( TextTagWidget("$item",
+          backgroundColor: Color(0xFFF0F0F0),
+          margin: EdgeInsets.fromLTRB(0, 0, 8, 8),
+          padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+          borderRadius: 2,
+          borderColor: Color(0xFFF0F0F0),
+          textStyle: TextStyle(
+              color: Colors.black54,
+              fontSize: 12
+          ),
+        ));
+      }
+
+      columWidget.add(Wrap(children: tipWidget));
+
+
+    }else{
+      columWidget.add(Container(height: 0,));
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: columWidget,
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    final jobItem = Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4)
-        ),
-        color: Colors.white,
-        elevation: 0.5,
-        margin: EdgeInsets.only(
-
-            top: ScreenUtil().setWidth(22),
-            bottom: 0),
-        child: Padding(
-          padding: EdgeInsets.only(
-              left: ScreenUtil().setWidth(28),
-              right: ScreenUtil().setWidth(28),
-              top: ScreenUtil().setWidth(20),
-              bottom: ScreenUtil().setWidth(20)),
-          child:Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final jobItem = Padding(
+      padding: EdgeInsets.only(
+          left: ScreenUtil().setWidth(28),
+          right: ScreenUtil().setWidth(28),
+          top: ScreenUtil().setWidth(20),
+          bottom: ScreenUtil().setWidth(30)),
+      child:Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: Row(
-                      children: <Widget>[
-                        Flexible(
-                          child: Text(
-                            job["title"].toString(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: ScreenUtil().setSp(32),
-                              fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(20, 20, 20, 1),
-                            ),
-                          ),
-                        ),
-
-
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Text(job["salary"].toString(),
-                      style: TextStyle(
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: Text(
+                        job["title"].toString(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
                           fontSize: ScreenUtil().setSp(32),
                           fontWeight: FontWeight.bold,
-                          color: Colours.app_main)),
-                ],
-              ),
-              SizedBox(
-                height: ScreenUtil().setWidth(20),
-              ),
-              Text(
-                job["label"].toString(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: ScreenUtil().setSp(23),
-                  color: Color.fromRGBO(151, 151, 151, 1),
+                          color: Color.fromRGBO(20, 20, 20, 1),
+                        ),
+                      ),
+                    ),
+
+
+                  ],
                 ),
               ),
-              SizedBox(
-                height: ScreenUtil().setWidth(28),
-              ),
-              DashLine(
-                color: Colors.black12,
-                height: 0.4,
-                dashWidth:2,
-              ),
-              Offstage(
-                  offstage: (isJi == null || isJi == false) ? true :false,
-                  child : Container(
-                    margin: EdgeInsets.fromLTRB(0,10,0,0),
-                    padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-                    decoration: BoxDecoration(
-                      color: Colours.app_main.withOpacity(0.2),
-
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Image.asset("images/ji.png",height: 16,width: 16,),
-                        SizedBox(width: 6,),
-                        Text(
-                          "2020-07-12前停止招聘",
-                          style: TextStyle(
-                              color: Colours.app_main,
-                              fontWeight: FontWeight.bold
-                          ),
-                        )
-                      ],
-                    ),
-
-                  )
-              ),
-              Offstage(
-                  offstage: (isBz == null || isBz == false) ? true :false,
-                  child : Container(
-                    margin: EdgeInsets.fromLTRB(0,10,0,0),
-                    padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-                    decoration: BoxDecoration(
-                      color: Colours.blue_main.withOpacity(0.2),
-
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Image.asset("images/bz.png",height: 16,width: 16,),
-                        SizedBox(width: 6,),
-                        Text(
-                          "官方保障，24小时跟踪！",
-                          style: TextStyle(
-                              color: Colours.blue_main,
-                              fontWeight: FontWeight.bold
-                          ),
-                        )
-                      ],
-                    ),
-
-                  )
-              ),
-
-              SizedBox(
-                height: ScreenUtil().setWidth(28),
-              ),
-
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  getImg(job["company_img"].toString()),
-                  SizedBox(
-                    width: ScreenUtil().setWidth(12),
-                  ),
-                  Flexible(
-                    child: Text(
-                      job["pub_person"].toString()==""?"HR发布":job["pub_person"],
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: ScreenUtil().setSp(30),
-                        color: Color.fromRGBO(57, 57, 57, 1),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: ScreenUtil().setWidth(16),
-                  ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      job["pub_date"].toString(),
-                      style: TextStyle(
-                        fontSize: ScreenUtil().setSp(22),
-                        color: Color.fromRGBO(176, 181, 180, 1),
-                      ),
-                    ),
-                  )
-
-                ],
-              ),
-              SizedBox(
-                height: ScreenUtil().setWidth(18),
-              ),
-
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-
-
-                  Image.asset(
-                    'images/qyrz.png',
-                    width: ScreenUtil().setWidth(24),
-                    height: ScreenUtil().setWidth(24),
-                    fit: BoxFit.cover,
-                  ),
-
-                  SizedBox(
-                    width: ScreenUtil().setWidth(4),
-                  ),
-                  Flexible(
-                    child: Text(
-                      job["company"].toString(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: ScreenUtil().setSp(22),
-                        color: Color.fromRGBO(57, 57, 57, 1),
-                      ),
-                    ),
-                  ),
-
-
-
-                ],
-              ),
-
+              SizedBox(width: 16),
+              Text(job["salary"].toString(),
+                  style: TextStyle(
+                      fontSize: ScreenUtil().setSp(32),
+                      fontWeight: FontWeight.bold,
+                      color: Colours.app_main)),
             ],
           ),
-        )
+          SizedBox(
+            height: ScreenUtil().setWidth(20),
+          ),
+          _getTip(),
+          SizedBox(
+            height: ScreenUtil().setWidth(28),
+          ),
+
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Image.asset(
+                      'images/qyrz.png',
+                      width: ScreenUtil().setWidth(24),
+                      height: ScreenUtil().setWidth(24),
+                      fit: BoxFit.cover,
+                    ),
+
+                    SizedBox(
+                      width: ScreenUtil().setWidth(4),
+                    ),
+
+                  ],
+                ),
+
+              ),
+
+              Container(
+                height: 28,
+                width: 80,
+                decoration: BoxDecoration(
+                    color: Colours.app_main,
+                    borderRadius: BorderRadius.circular(2)
+                ),
+                child: Text(
+                  "报名",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12
+                  ),
+                ),
+                alignment: Alignment.center,
+              )
+            ],
+          ),
+          SizedBox(height: 16,),
+          Container(
+            color: Color(0xfff8f8f8),
+            height: 2,
+          )
+        ],
+      ),
     );
 
     if (lastItem) {
