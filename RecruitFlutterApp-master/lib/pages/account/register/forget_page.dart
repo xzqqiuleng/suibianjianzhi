@@ -57,7 +57,7 @@ class _ForgetState extends State<ForgetPage>{
                 children: <Widget>[
                   Card(
                       margin: EdgeInsets.only(left: 16,right: 16,top:58),
-                      elevation: 1,
+                      elevation: 0,
                       color: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4)
@@ -67,17 +67,6 @@ class _ForgetState extends State<ForgetPage>{
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Card(
-                              shadowColor: Color(0xdd242424),
-                              elevation: 1,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)
-                              ),
-                              child: Image(image: AssetImage("images/icon_hc.png"),
-                                height: 100,
-                                width: 100,
-                              ),
-                            ),
                             SizedBox(height: 50,),
                             LogRegTextField(
 
@@ -172,12 +161,29 @@ class _ForgetState extends State<ForgetPage>{
                       )
                   ),
 
+                  Positioned(
+                      right: 30,
+                      top: 40,
+                      child:GestureDetector(
+                        onTap: ()=>Navigator.of(context).pop(),
+                        child:Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              image:DecorationImage(
+                                  image: AssetImage("images/cancle.png")
+                              )
+                          ),
+                        ),
 
+                      )
+                  )
 
                 ],
 
               ),
     ),
+    backgroundColor: Colors.white,
     resizeToAvoidBottomPadding: false,
   );
   }

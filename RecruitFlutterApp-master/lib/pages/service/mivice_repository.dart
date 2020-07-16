@@ -93,7 +93,13 @@ class MiviceRepository{
     });
     return response;
   }
+  Future getJzCompanyDetail(String url) async {
+    var response = await dio.post<Map>('/resolve/company',data: {
 
+      'url': url,
+    });
+    return response;
+  }
   Future registerPd(String phone,String pwd,int type) async {
     var response = await dio.post<Map>('/user/register',data: {
 

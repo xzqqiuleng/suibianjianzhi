@@ -5,11 +5,13 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_tag_layout/flutter_tag_layout.dart';
 import 'package:recruit_app/colours.dart';
+import 'package:recruit_app/pages/account/register/login_pd_page.dart';
 import 'package:recruit_app/pages/bm_result.dart';
 import 'package:recruit_app/pages/companys/company_detail.dart';
 import 'package:recruit_app/pages/constant.dart';
 import 'package:recruit_app/pages/jobs/chat_room.dart';
 import 'package:recruit_app/pages/service/mivice_repository.dart';
+import 'package:recruit_app/pages/share_helper.dart';
 import 'package:recruit_app/widgets/dash_line.dart';
 import 'job_row_item.dart';
 
@@ -37,6 +39,10 @@ class _JobDetailState extends State<JobDetail> {
   Map linkMethod;
   String address = "暂无地址";
   String compay_desc = "暂无公司信息";
+
+  Map SaveDatas=Map();
+ bool isSvae = false;
+
   _loadData(){
 
      new MiviceRepository().getJZDetail(widget.url).then((value) {
@@ -61,6 +67,14 @@ class _JobDetailState extends State<JobDetail> {
           _getLabel();
 //          _getContent();
         });
+
+        SaveDatas["jobHref"] = widget.url;
+        SaveDatas["pub_time"] = jobInfo["update_time"];
+        SaveDatas["companyName"] = company["name"];
+        SaveDatas["companyDetList"] =jobInfo["label"];
+        SaveDatas["salary"] = jobInfo["salary"];
+        SaveDatas["title"] =jobInfo["title"];
+
 
       }
     });
@@ -168,11 +182,121 @@ class _JobDetailState extends State<JobDetail> {
     }
 
   }
+  List _sexList=["违法违纪，敏感言论","色情，辱骂，粗俗","职位虚假，信息不真实","违法，欺诈，诱导欺骗","收取求职者费用","变相发布广告和招商","其他违规行为"];
+
+  void _showSexPop(BuildContext context){
+    FixedExtentScrollController  scrollController = FixedExtentScrollController(initialItem:0);
+    showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context){
+          return _buildBottonPicker(
+              CupertinoPicker(
+
+                magnification: 1,
+                itemExtent:58 ,
+                backgroundColor: Colors.white,
+                useMagnifier: true,
+                scrollController: scrollController,
+                onSelectedItemChanged: (int index){
+
+
+                },
+                children: List<Widget>.generate(_sexList.length, (index){
+                  return Center(
+                    child: Text(_sexList[index]),
+                  );
+                }),
+              )
+          );
+        });
+  }
+
+  Widget _buildBottonPicker(Widget picker) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          height: 52,
+          color: Colours.gray_F6F6F6,
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+
+                left: 20,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("取消",
+                    style: TextStyle(
+                        color: Colours.black_212920,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none
+                    ),),
+                ),
+              ),
+              Positioned(
+                right: 20,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    setState(() {
+
+
+                    });
+                  },
+                  child: Text("确定",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        color: Colours.app_main,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold
+                    ),),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 190,
+          padding: EdgeInsets.only(top: 6),
+          color: Colors.white,
+          child: DefaultTextStyle(
+            style: const TextStyle(
+                color: Colours.black_212920,
+                fontSize: 18
+            ),
+            child: GestureDetector(
+              child: SafeArea(
+                top: false,
+                child: picker,
+              ),
+            ),
+          ),
+        )
+      ],
+
+    );
+  }
+
+
+
+
+
  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _loadData();
+
+    if(ShareHelper.isLogin()){
+      isSvae = ShareHelper.isHaveData(widget.url,"work");
+    }else{
+      isSvae = false;
+    }
+
   }
   @override
   Widget build(BuildContext context) {
@@ -195,18 +319,36 @@ class _JobDetailState extends State<JobDetail> {
           actions: <Widget>[
             IconButton(
                 icon: Image.asset(
-                  'images/ic_action_favor_off_black.png',
+                  isSvae ?'images/save_yes.png':'images/save_no.png',
                   width: 24,
                   height: 24,
                 ),
-                onPressed: () {}),
+                onPressed: () {
+                  if(!ShareHelper.isLogin()){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginPdPage()));
+                    return;
+                  }
+                  if(isSvae){
+                    ShareHelper.deletData(widget.url,"work");
+                  }else{
+                    ShareHelper.saveData(SaveDatas,"work");
+
+                  }
+                  setState(() {
+                    isSvae = !isSvae;
+                  });
+
+                }),
             IconButton(
                 icon: Image.asset(
                   'images/ic_action_report_black.png',
                   width: 24,
                   height: 24,
                 ),
-                onPressed: () {})
+                onPressed: () {_showSexPop(context);})
           ],
         ),
         body: Column(
@@ -628,7 +770,7 @@ class _JobDetailState extends State<JobDetail> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => JobDetail(datalist[index]["job_id"]),
+                                      builder: (context) => JobDetail(0,url:datalist[index]["url"]),
                                     ));
                               });
                         }
@@ -671,36 +813,10 @@ class JobDetailItem extends StatelessWidget {
   final Map<String,dynamic> job;
   final int index;
   final bool lastItem;
-  final bool isJi;
-  final bool isBz;
+
   List tags;
-  JobDetailItem({Key key, this.job, this.index, this.lastItem,this.isJi,this.isBz,})
+  JobDetailItem({Key key, this.job, this.index, this.lastItem})
       : super(key: key);
-
-
-  Widget getImg(String imgUrl){
-    if(imgUrl.contains("http")){
-      return  ClipRRect(
-        borderRadius: BorderRadius.circular(ScreenUtil().setWidth(28)),
-        child: Image.network(
-          imgUrl,
-          width: ScreenUtil().setWidth(56),
-          height: ScreenUtil().setWidth(56),
-          fit: BoxFit.cover,
-        ),
-      );
-    }else{
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(ScreenUtil().setWidth(28)),
-        child: Image.network(
-          Constant.deault_compay,
-          width: ScreenUtil().setWidth(56),
-          height: ScreenUtil().setWidth(56),
-          fit: BoxFit.cover,
-        ),
-      );
-    }
-  }
 
 
   Widget _getTip(){

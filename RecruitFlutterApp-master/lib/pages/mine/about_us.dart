@@ -21,17 +21,17 @@ class AboutUsPage extends StatelessWidget{
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colours.app_main,
+          backgroundColor: Colors.white,
           title: Text("关于我们",
             style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Colors.black26
+                color: Colors.black87
             ),
           ),
           leading: Builder(builder: (context) {
             return IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black26), //自定义图标
+              icon: Icon(Icons.arrow_back, color: Colors.black87), //自定义图标
               onPressed: () {
                 Navigator.of(context).pop(true);
               },

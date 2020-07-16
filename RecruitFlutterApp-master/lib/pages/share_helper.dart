@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:recruit_app/pages/account/register/User.dart';
 import 'package:recruit_app/pages/storage_manager.dart';
 
 import 'constant.dart';
@@ -117,9 +118,55 @@ class ShareHelper{
 
 
  }
-// static User getUser(){
-//   var userMap = StorageManager.localStorage.getItem(UserModel.kUser);
-//   User _user = userMap != null ? User.fromJson(userMap) : null;
-//   return _user;
-//}
+
+
+ static bool isHaveData(String url,String type){
+   String key = getUser().userId+type;
+   if(StorageManager.sharedPreferences != null && StorageManager.sharedPreferences.getString(key) !=null&&StorageManager.sharedPreferences.getString(key) !=""){
+     List <dynamic> searchLists= json.decode(StorageManager.sharedPreferences.getString(key));
+    for(var ite in searchLists ){
+       if(ite["jobHref"] == url){
+         return true;
+       }
+    }
+
+    return false;
+   }else{
+    return true;
+   }
+ }
+ static void deletData(String url,String type){
+   String key = getUser().userId+type;
+   if(StorageManager.sharedPreferences != null && StorageManager.sharedPreferences.getString(key) !=null&&StorageManager.sharedPreferences.getString(key) !=""){
+     List <dynamic> searchLists= json.decode(StorageManager.sharedPreferences.getString(key));
+     for(var ite in searchLists ){
+       if(ite["jobHref"] == url){
+         searchLists.remove(ite);
+         StorageManager.sharedPreferences.setString(key, json.encode(searchLists));
+
+         break;
+       }
+     }
+   }
+ }
+ static void saveData(Map job,String type){
+   String key = getUser().userId+type;
+   List <dynamic> searchLists;
+   if(StorageManager.sharedPreferences != null && StorageManager.sharedPreferences.getString(key) !=null&&StorageManager.sharedPreferences.getString(key) !=""){
+     searchLists = json.decode(StorageManager.sharedPreferences.getString(key));
+     searchLists.insert(0,job);
+   }else{
+     searchLists= new List();
+     searchLists.add(job);
+   }
+
+   StorageManager.sharedPreferences.setString(key, json.encode(searchLists));
+
+
+ }
+ static User getUser(){
+   var userMap = StorageManager.localStorage.getItem(kUser);
+   User _user = userMap != null ? User.fromJson(userMap) : null;
+   return _user;
+}
 }

@@ -12,6 +12,7 @@ import 'package:recruit_app/pages/employe/employe_list.dart';
 import 'package:recruit_app/pages/home/home_page.dart';
 import 'package:recruit_app/pages/jobs/job_list.dart';
 import 'package:recruit_app/pages/mine/me.dart';
+import 'package:recruit_app/pages/mine/me_jz.dart';
 import 'package:recruit_app/pages/msg/agreement_detail.dart';
 import 'package:recruit_app/pages/msg/msg_list.dart';
 import 'package:recruit_app/pages/msg/new_msglist.dart';
@@ -106,7 +107,7 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
     HomePage(),
     CompanyJobList(),
     NewMessageList(),
-    Mine(),
+    MeJz(),
   ];
 
   static List<BottomNavigationBarItem> _widgetBottoms =

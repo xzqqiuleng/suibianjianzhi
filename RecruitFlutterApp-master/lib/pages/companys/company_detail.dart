@@ -1,76 +1,287 @@
 import 'dart:convert';
 import 'dart:ui';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:flutter_tag_layout/flutter_tag_layout.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/model/company_pic_list.dart';
-import 'package:recruit_app/model/company_welfare_list.dart';
-import 'package:recruit_app/model/job_list.dart';
-import 'package:recruit_app/pages/btn_widget.dart';
-import 'package:recruit_app/pages/companys/company_job.dart';
-import 'package:recruit_app/pages/companys/company_job_item.dart';
-import 'package:recruit_app/pages/companys/company_pic_item.dart';
-import 'package:recruit_app/pages/companys/company_welfare_item.dart';
-import 'package:recruit_app/pages/companys/gs_info.dart';
-import 'package:recruit_app/pages/constant.dart';
+import 'package:recruit_app/pages/account/register/login_pd_page.dart';
+import 'package:recruit_app/pages/bm_result.dart';
 import 'package:recruit_app/pages/jobs/job_detail.dart';
 import 'package:recruit_app/pages/service/mivice_repository.dart';
-import 'package:recruit_app/widgets/bottom_drawer_widget.dart';
+import 'package:recruit_app/pages/share_helper.dart';
 
 class CompanyDetail extends StatefulWidget {
   int id;
-  CompanyDetail(this.id);
+  String url;
+  CompanyDetail(this.id,{this.url});
   @override
   _CompanyDetailState createState() => _CompanyDetailState();
 }
 
+
+
+
+
+
+
+
 class _CompanyDetailState extends State<CompanyDetail> {
   List<CompanyPicData> _picList = CompanyPicList.loadCompanyPicList();
   Map infors ;
-//  List<String> labels=["五险一金"];
-  List<String>tip=["五险一金"];
+
   List datalist=List() ;
-  List<Job> _jobList = JobData.loadJobs();
-  Map com_label;
-  Map compay_info;
-  List<GSInfo> gsInfos=List();
+ String labelStr = "暂未填写公司福利";
+//  List<GSInfo> gsInfos=List();
+
+  List _sexList=["公司信息虚假","变相发布广告和招商信息","包含，欺诈，诱导欺骗等信息","其他违规行为"];
+  Map SaveDatas=Map();
+  bool isSvae = false;
+  void _showSexPop(BuildContext context){
+    FixedExtentScrollController  scrollController = FixedExtentScrollController(initialItem:0);
+    showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context){
+          return _buildBottonPicker(
+              CupertinoPicker(
+
+                magnification: 1,
+                itemExtent:58 ,
+                backgroundColor: Colors.white,
+                useMagnifier: true,
+                scrollController: scrollController,
+                onSelectedItemChanged: (int index){
+
+
+                },
+                children: List<Widget>.generate(_sexList.length, (index){
+                  return Center(
+                    child: Text(_sexList[index]),
+                  );
+                }),
+              )
+          );
+        });
+  }
+
+  Widget _buildBottonPicker(Widget picker) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          height: 52,
+          color: Colours.gray_F6F6F6,
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+
+                left: 20,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("取消",
+                    style: TextStyle(
+                        color: Colours.black_212920,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none
+                    ),),
+                ),
+              ),
+              Positioned(
+                right: 20,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    setState(() {
+
+
+                    });
+                  },
+                  child: Text("确定",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        color: Colours.app_main,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold
+                    ),),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 190,
+          padding: EdgeInsets.only(top: 6),
+          color: Colors.white,
+          child: DefaultTextStyle(
+            style: const TextStyle(
+                color: Colours.black_212920,
+                fontSize: 18
+            ),
+            child: GestureDetector(
+              child: SafeArea(
+                top: false,
+                child: picker,
+              ),
+            ),
+          ),
+        )
+      ],
+
+    );
+  }
+
+
+
   @override
   void initState() {
     super.initState();
 
+    if(ShareHelper.isLogin()){
+      isSvae = ShareHelper.isHaveData(widget.url,"company");
+    }else{
+      isSvae = false;
+    }
+
+//    _loadData();
+  _testData();
+  }
+  _testData(){
+    var data={
+      "company": {
+        "summary": "<div style=\"width:100%;height:auto; overflow:hidden\" id=\"com_content\" class=\"company_img_auto\"> \n <p><span style=\"color: rgb(51, 51, 51); font-family: &quot;PingFang SC&quot;, &quot;Microsoft Yahei&quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);\">网络科技领域内的技术推广、技术咨询、技术转让、技术服务，软件开发，互联网信息服务；人才中介服务；教育咨询，企业管理咨询，设计、代理、制作国内各类广告；日用品、电子产品、计算机、数码产品、护肤品、通讯设备、辅助设备、工艺品、首饰、服装销售；门窗安装(依法须经批准的项目,经相关部门批准后方可开展经营活动)</span></p> \n</div> \n<div class=\"company_show_more none\"> \n <a href=\"javascript:;\" onclick=\"showcc()\">查看更多</a> \n</div>",
+        "handle_rate": "0%",
+        "address": "地址：浔阳区",
+        "job_num": "6",
+        "login_time": "未登录",
+        "name": "江西鑫锦科技有限公司",
+        "label": [
+          "江西 - 九江",
+          "计算机/互联网",
+          "民营企业",
+          "200-500人"
+        ],
+        "invite_num": "0"
+      },
+      "comShowJob": [
+        {
+          "address": "北京",
+          "pub_time": "2020-04-16",
+          "href": "http://www.zaojiong.com/job/170.html",
+          "label": [
+            "不限经验",
+            "初中以上学历"
+          ],
+          "title": "招聘淘宝运营兼职",
+          "salary": "6000-9000元/月"
+        },
+        {
+          "address": "全国不限",
+          "pub_time": "2020-04-01",
+          "href": "http://www.zaojiong.com/job/170.html",
+          "label": [
+            "不限经验",
+            "初中以上学历"
+          ],
+          "title": "招聘淘宝运营兼职",
+          "salary": "6000-9000元/月"
+        },
+        {
+          "address": "全国不限",
+          "pub_time": "2020-03-19",
+          "href": "http://www.zaojiong.com/job/170.html",
+          "label": [
+            "不限经验",
+            "初中以上学历"
+          ],
+          "title": "招聘淘宝运营兼职",
+          "salary": "8000-15000元/月"
+        },
+        {
+          "address": "昆明",
+          "pub_time": "2020-03-16",
+          "href": "http://www.zaojiong.com/job/170.html",
+          "label": [
+            "不限经验",
+            "初中以上学历"
+          ],
+          "title": "招聘淘宝运营兼职",
+          "salary": "6000-16000元/月"
+        },
+        {
+          "address": "全国不限",
+          "pub_time": "2020-03-16",
+          "href": "http://www.zaojiong.com/job/170.html",
+          "label": [
+            "不限经验",
+            "初中以上学历"
+          ],
+          "title": "招聘淘宝运营兼职",
+          "salary": "6000-12000元/月"
+        }
+      ]
+    };
+    setState(() {
+      infors = data["company"];
+      List  jobList = data["comShowJob"];
+      datalist.clear();
+      datalist.addAll(jobList);
+
+      if(infors["label"] !=null && infors["label"] != "") {
+        List labels = infors["label"];
+        for (var item in labels) {
+          if (labelStr == "暂未填写公司福利") {
+            labelStr = item.toString();
+          } else {
+            labelStr = labelStr + "  |  " + item.toString();
+          }
+        }
+      }
+
+      SaveDatas["name"] = infors["name"];
+      SaveDatas["label"] = infors["label"];
+      SaveDatas["address"] = infors["address"];
+      SaveDatas["job_num"] = infors["job_num"];
 
 
-    _loadData();
+    });
+
   }
   _loadData(){
 
-    if(widget.id == null){
-      widget.id = 8192;
-    }
-    new MiviceRepository().getCompanyDetail(widget.id).then((value) {
+    new MiviceRepository().getJzCompanyDetail(widget.url).then((value) {
       var reponse = json.decode(value.toString());
       if(reponse["status"] == "success"){
         var   data = reponse["result"];
 
 
         setState(() {
-          infors = data["com"];
-        List  jobList = data["jobs"];
+          infors = data["company"];
+        List  jobList = data["comShowJob"];
         datalist.clear();
           datalist.addAll(jobList);
-          compay_info = json.decode(infors["company_info"].toString());
 
-          if(infors["label"] !=null && infors["label"] != ""){
-            com_label = json.decode(infors["label"].toString());
+          if(infors["label"] !=null && infors["label"] != "") {
+            List labels = infors["label"];
+            for (var item in labels) {
+              if (labelStr == "暂未填写公司福利") {
+                labelStr = item.toString();
+              } else {
+                labelStr = labelStr + "  |  " + item.toString();
+              }
+            }
           }
 
-
-          tip = data["tip"].toString().split(" ");
-
-          _getContent();
+          SaveDatas["name"] = infors["name"];
+          SaveDatas["label"] = infors["label"];
+          SaveDatas["address"] = infors["address"];
+          SaveDatas["job_num"] = infors["job_num"];
 
 
         });
@@ -78,16 +289,16 @@ class _CompanyDetailState extends State<CompanyDetail> {
       }
     });
   }
-  void _getContent(){
-    gsInfos.clear();
-    if(com_label == null){
-      return;
-    }
-    com_label.forEach((key, value) {
- GSInfo gsInfo = GSInfo(key, value);
-     gsInfos.add(gsInfo);
-     });
-    }
+//  void _getContent(){
+//    gsInfos.clear();
+//    if(com_label == null){
+//      return;
+//    }
+//    com_label.forEach((key, value) {
+// GSInfo gsInfo = GSInfo(key, value);
+//     gsInfos.add(gsInfo);
+//     });
+//    }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,11 +352,15 @@ class _CompanyDetailState extends State<CompanyDetail> {
             actions: <Widget>[
               IconButton(
                   icon: Image.asset(
-                    'images/ic_action_settings.png',
+                    'images/ic_action_report_black.png',
                     width: 24,
                     height: 24,
+                    color: Colors.white,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+
+                    _showSexPop(context);
+                  }),
             ],
           ),
           SafeArea(
@@ -165,7 +380,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
                         elevation: 1,
 
                         child: Container(
-                          height:160,
+                          height:180,
                           child: Stack(
                             children: <Widget>[
                                Positioned(
@@ -188,7 +403,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
                                 child:  ClipRRect(
                                   borderRadius: BorderRadius.all(Radius.circular(4)),
                                   child: Image.network(
-                                      infors == null|| infors["company_img"].toString() ==""?Constant.deault_compay:infors["company_img"],
+                                    "http://www.zaojiong.com/data/logo/20170418/14906489056.PNG",
                                       width: 50,
                                       height: 50,
                                       fit: BoxFit.fill),
@@ -196,12 +411,12 @@ class _CompanyDetailState extends State<CompanyDetail> {
                               ),
                               Positioned(
                                 left: 76,
-                                top: 70,
+                                top: 60,
                                 child:Row(
                                   children: <Widget>[
 
                                     Text(
-                                      '企业认证',
+                                      labelStr,
                                       style: TextStyle(
                                         fontSize: ScreenUtil().setSp(22),
                                         color: Color.fromRGBO(151, 151, 151,6),
@@ -227,6 +442,101 @@ class _CompanyDetailState extends State<CompanyDetail> {
                                     color: Color(0xfff8f8f8),
                                     borderRadius: BorderRadius.circular(4)
                                   ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              "在招职位",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            Text(
+                                            "${infors["job_num"]}个" ,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        width:  0.2,
+                                        height: 34,
+                                        color: Colors.black26,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              "共邀面试",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            Text(
+                                                "${int.parse(infors["invite_num"].toString())+1}个" ,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 0.2,
+                                        height: 34,
+                                        color: Colors.black26,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text(
+                                              "简历处理率",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            Text(
+                                              "100%",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
                                 )
                               )
                             ],
@@ -237,24 +547,24 @@ class _CompanyDetailState extends State<CompanyDetail> {
                       SizedBox(
                         height: 30,
                       ),
-                      Container(
-                        height: 40,
-                        child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: tip.length,
-                            itemBuilder: (context, index) {
-                              if (index < tip.length) {
-                                return CompanyWelfareItem(
-                                  welfareData: tip[index],
-                                  index: index,
-                                  isLastItem: index == tip.length - 1,
-                                );
-                              }
-                              return null;
-                            }),
-                      ),
+//                      Container(
+//                        height: 40,
+//                        child: ListView.builder(
+//                            physics: BouncingScrollPhysics(),
+//                            shrinkWrap: true,
+//                            scrollDirection: Axis.horizontal,
+//                            itemCount: tip.length,
+//                            itemBuilder: (context, index) {
+//                              if (index < tip.length) {
+//                                return CompanyWelfareItem(
+//                                  welfareData: tip[index],
+//                                  index: index,
+//                                  isLastItem: index == tip.length - 1,
+//                                );
+//                              }
+//                              return null;
+//                            }),
+//                      ),
 //                      Row(
 //                        mainAxisAlignment: MainAxisAlignment.start,
 //                        crossAxisAlignment: CrossAxisAlignment.center,
@@ -298,13 +608,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
 //                          ),
 //                        ],
 //                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
 
-                      SizedBox(
-                        height: 20,
-                      ),
                       Text('公司介绍',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -314,13 +618,9 @@ class _CompanyDetailState extends State<CompanyDetail> {
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.black87)),
-                      SizedBox(
-                        height: 20,
-                      ),
-                    Html(data: compay_info== null?"":compay_info["公司信息"].replaceAll("微信分享", "").replaceAll("地图", "")),
-                      SizedBox(
-                        height: 20,
-                      ),
+
+                    Html(data: infors== null?"":infors["summary"].toString().replaceAll("查看更多", "")),
+
 //                      Text('公司照片',
 //                          maxLines: 1,
 //                          overflow: TextOverflow.ellipsis,
@@ -366,11 +666,18 @@ class _CompanyDetailState extends State<CompanyDetail> {
                       SizedBox(
                         height: 20,
                       ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        child: Image.asset('images/map_icon.jpg',
-                            height: 100, fit: BoxFit.cover),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            child: Image.asset('images/map_icon.jpg',
+                                height: 100, fit: BoxFit.cover),
+                          ),
+                          Text(infors == null? "" :infors["address"])
+                        ],
                       ),
+
                       SizedBox(
                         height: 20,
                       ),
@@ -444,25 +751,25 @@ class _CompanyDetailState extends State<CompanyDetail> {
 //                      SizedBox(
 //                        height: 20,
 //                      ),
-                      Text('工商信息',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              wordSpacing: 1,
-                              letterSpacing: 1,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87)),
-                      SizedBox(
-                        height: 20,
-                      ),
-                     ListView.builder(itemBuilder: (BuildContext context,int index){
-                       return GsItemwidget(gsInfos[index]);
-                     },
-                       itemCount: gsInfos.length,
-                         shrinkWrap: true,
-                         physics: const NeverScrollableScrollPhysics()
-                     ),
+//                      Text('工商信息',
+//                          maxLines: 1,
+//                          overflow: TextOverflow.ellipsis,
+//                          style: const TextStyle(
+//                              wordSpacing: 1,
+//                              letterSpacing: 1,
+//                              fontSize: 18,
+//                              fontWeight: FontWeight.bold,
+//                              color: Colors.black87)),
+//                      SizedBox(
+//                        height: 20,
+//                      ),
+//                     ListView.builder(itemBuilder: (BuildContext context,int index){
+//                       return GsItemwidget(gsInfos[index]);
+//                     },
+//                       itemCount: gsInfos.length,
+//                         shrinkWrap: true,
+//                         physics: const NeverScrollableScrollPhysics()
+//                     ),
                       SizedBox(
                         height: 16,
                       ),
@@ -476,38 +783,40 @@ class _CompanyDetailState extends State<CompanyDetail> {
                               fontWeight: FontWeight.bold,
                               color: Colors.black87)),
                       SizedBox(
-                        height: 8,
+                        height: 20,
                       ),
-
+                    Container(
+                      height: 1,
+                      color: Color(0xfff8f8f8),
+                    ),
                       ListView.builder(itemBuilder: (BuildContext context,int index){
                         if(datalist.length ==0 || datalist[index]== null){
 
                           return Text("");
                         }else{
-                          return PositionItem(datalist[index]);
+                          return GestureDetector(
+                             onTap: (){
+                               Navigator.push(
+                                   context,
+                                   MaterialPageRoute(
+                                     builder: (context) => JobDetail(0,url:datalist[index]["url"]),
+                                   ));
+                             },
+                              behavior: HitTestBehavior.opaque,
+                            child:JzComItem(job:datalist[index],index: index,
+                                lastItem: index == datalist.length - 1)
+                          );
                         }
 
                       },
-                          itemCount: datalist.length >3 ? 3 :datalist.length,
+                          itemCount: datalist.length ,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics()
                       ),
                       SizedBox(
                         height: 20,
                       ),
-                      CustomBtnWidget(
-                        radius: 30,
-                        fontSize: 12,
-                        text:"查看所有职位",
-                        btnColor: Colours.app_main,
-                        onPressed: (){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CompanyJob(datalist),
-                              ));
-                        },
-                      ),
+
                       SizedBox(
                         height: 20,
                       ),
@@ -521,168 +830,234 @@ class _CompanyDetailState extends State<CompanyDetail> {
 //            child: buildJobDrawer(),
 //            marginTop: kToolbarHeight,
 //            smallHeight: 56,),
+
+        Positioned(
+          bottom: 0,
+          right: 20,
+          left: 20,
+          child:    SafeArea(
+            top: false,
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                child: MaterialButton(
+                  color: isSvae?Colors.grey:Colours.app_main,
+                  onPressed: () {
+                    if(!ShareHelper.isLogin()){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginPdPage()));
+                      return;
+                    }
+                    if(isSvae){
+                      ShareHelper.deletData(widget.url,"work");
+                    }else{
+                      ShareHelper.saveData(SaveDatas,"work");
+
+                    }
+                    setState(() {
+                      isSvae = !isSvae;
+                    });
+                  },
+                  textColor: Colors.white,
+                  child: Text(isSvae?"已关注" : "+ 关注"),
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
+                )),
+          ),
+        )
         ],
+
       ),
     );
   }
 
 
 
-  Widget buildJobDrawer() {
-    return SafeArea(
-      bottom: false,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 15,
-        ),
-        margin: EdgeInsets.only(top: kToolbarHeight),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10))),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              height: 56,
-              alignment: Alignment.centerLeft,
-              child: Text('职位',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      wordSpacing: 1,
-                      letterSpacing: 1,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black)),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  if (index < _jobList.length) {
-                    return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        child: CompanyJobItem(
-                            job: _jobList[index],
-                            index: index,
-                            lastItem: index == _jobList.length - 1),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => JobDetail(1),
-                              ));
-                        });
-                  }
-                  return null;
-                },
-                itemCount: _jobList.length,
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
+}
+
+
+
+
+
+class JzComItem extends StatelessWidget {
+  final Map<String,dynamic> job;
+  final int index;
+  final bool lastItem;
+
+  List tags;
+  JzComItem({Key key, this.job, this.index, this.lastItem})
+      : super(key: key);
+
+
+
+  Widget _getTip(){
+    tags = job["label"];
+    List<Widget> tipWidget=[];
+    List<Widget> columWidget=[];
+    if(tags == null|| tags.length>0 ){
+
+      for (var item in tags){
+        if(item == " "||item ==""){
+          continue;
+        }
+        tipWidget.add( TextTagWidget("$item",
+          backgroundColor: Color(0xFFF0F0F0),
+          margin: EdgeInsets.fromLTRB(0, 0, 8, 8),
+          padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+          borderRadius: 2,
+          borderColor: Color(0xFFF0F0F0),
+          textStyle: TextStyle(
+              color: Colors.black54,
+              fontSize: 12
+          ),
+        ));
+      }
+
+      columWidget.add(Wrap(children: tipWidget));
+
+
+    }else{
+      columWidget.add(Container(height: 0,));
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: columWidget,
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    final jobItem = Padding(
+      padding: EdgeInsets.only(
+          top: ScreenUtil().setWidth(20),
+          bottom: ScreenUtil().setWidth(30)),
+      child:Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: Text(
+                        job["title"].toString(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(32),
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(20, 20, 20, 1),
+                        ),
+                      ),
+                    ),
+
+
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),);
-  }
-}
-class GsItemwidget extends StatelessWidget{
-  GSInfo gsInfo;
-  GsItemwidget(this.gsInfo);
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Column(
-      children: <Widget>[
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(gsInfo.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    wordSpacing: 1,
-                    letterSpacing: 1,
-                    fontSize: 14,
-                    color: Colors.black54)),
-            SizedBox(
-              width: 15,
-            ),
-            Expanded(
-              child: Text(gsInfo.txt,
-                  textAlign: TextAlign.end,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      wordSpacing: 1,
-                      letterSpacing: 1,
-                      fontSize: 14,
-                      color: Colors.black54)),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-      ],
-    );
-  }
-
-}
-
-
-
-class PositionItem extends StatelessWidget{
-  Map info;
-  PositionItem(this.info);
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Column(
-      children: <Widget>[
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-
-          children: <Widget>[
-            SizedBox(
-              height: 12,
-            ),
-            Text(info["title"],
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    wordSpacing: 1,
-                    letterSpacing: 1,
-                    fontSize: 16,
-                    color: Colors.black87)),
-            SizedBox(
-              height: 12,
-            ),
-         Text(info["salary"],
-
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                      wordSpacing: 1,
-                      letterSpacing: 1,
-                      fontSize: 16,
+              SizedBox(width: 16),
+              Text(job["salary"].toString(),
+                  style: TextStyle(
+                      fontSize: ScreenUtil().setSp(32),
+                      fontWeight: FontWeight.bold,
                       color: Colours.app_main)),
-          ],
-        ),
-        SizedBox(
-          height: 16,
-        ),
-        Container(
-          height: 4,
-          color:Color(0xfff8f8f8),
-        ),
+            ],
+          ),
+          SizedBox(
+            height: ScreenUtil().setWidth(20),
+          ),
+          _getTip(),
+          SizedBox(
+            height: ScreenUtil().setWidth(28),
+          ),
+
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Image.asset(
+                      'images/dz.png',
+                      width: ScreenUtil().setWidth(30),
+                      height: ScreenUtil().setWidth(30),
+                      fit: BoxFit.cover,
+                    ),
+
+                    SizedBox(
+                      width: ScreenUtil().setWidth(12),
+                    ),
+                    Text(job["address"].toString(),
+                        style: TextStyle(
+                            fontSize: ScreenUtil().setSp(28),
+                            color: Colors.black54)),
+                    SizedBox(
+                      width: ScreenUtil().setWidth(20),
+                    ),
+                    Image.asset(
+                      'images/rq.png',
+                      width: ScreenUtil().setWidth(30),
+                      height: ScreenUtil().setWidth(30),
+                      fit: BoxFit.cover,
+                    ),
+
+                    SizedBox(
+                      width: ScreenUtil().setWidth(12),
+                    ),
+                    Text(job["pub_time"].toString(),
+                        style: TextStyle(
+                            fontSize: ScreenUtil().setSp(28),
+                            color: Colors.black54)),
+                  ],
+                ),
+
+              ),
+
+              Container(
+                height: 28,
+                width: 80,
+                decoration: BoxDecoration(
+                    color: Colours.app_main,
+                    borderRadius: BorderRadius.circular(2)
+                ),
+                child: Text(
+                  "报名",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12
+                  ),
+                ),
+                alignment: Alignment.center,
+              )
+            ],
+          ),
+          SizedBox(height: 16,),
+          Container(
+            color: Color(0xfff8f8f8),
+            height: 2,
+          )
+        ],
+      ),
+    );
+
+    if (lastItem) {
+      return jobItem;
+    }
+    return Column(
+      children: <Widget>[
+        jobItem,
       ],
     );
   }
-
 }
