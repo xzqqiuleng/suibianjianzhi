@@ -201,6 +201,17 @@ class JobRowItem extends StatelessWidget {
     return Column(
       children: <Widget>[
         jobItem,
+      index != 0 && index % 5 ==0? Container(
+          margin: EdgeInsets.fromLTRB(14, 4, 14, 4),
+          height: 100,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("images/mid_ad.jpg"),
+              fit: BoxFit.fill,
+            ),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ):Container(),
       ],
     );
   }

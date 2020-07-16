@@ -512,7 +512,7 @@ class _JobDetailState extends State<JobDetail> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CompanyDetail(company["href"])));
+                                  builder: (context) => CompanyDetail(0,url:company["href"])));
                         },
                       ),
                       Container(
@@ -770,7 +770,7 @@ class _JobDetailState extends State<JobDetail> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => JobDetail(0,url:datalist[index]["url"]),
+                                      builder: (context) => JobDetail(0,url:datalist[index]["href"]),
                                     ));
                               });
                         }
@@ -859,8 +859,6 @@ class JobDetailItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final jobItem = Padding(
       padding: EdgeInsets.only(
-          left: ScreenUtil().setWidth(28),
-          right: ScreenUtil().setWidth(28),
           top: ScreenUtil().setWidth(20),
           bottom: ScreenUtil().setWidth(30)),
       child:Column(
@@ -917,16 +915,36 @@ class JobDetailItem extends StatelessWidget {
                 child: Row(
                   children: <Widget>[
                     Image.asset(
-                      'images/qyrz.png',
-                      width: ScreenUtil().setWidth(24),
-                      height: ScreenUtil().setWidth(24),
+                      'images/dz.png',
+                      width: ScreenUtil().setWidth(30),
+                      height: ScreenUtil().setWidth(30),
                       fit: BoxFit.cover,
                     ),
 
                     SizedBox(
-                      width: ScreenUtil().setWidth(4),
+                      width: ScreenUtil().setWidth(12),
+                    ),
+                    Text(job["address"].toString(),
+                        style: TextStyle(
+                            fontSize: ScreenUtil().setSp(28),
+                            color: Colors.black54)),
+                    SizedBox(
+                      width: ScreenUtil().setWidth(20),
+                    ),
+                    Image.asset(
+                      'images/rq.png',
+                      width: ScreenUtil().setWidth(30),
+                      height: ScreenUtil().setWidth(30),
+                      fit: BoxFit.cover,
                     ),
 
+                    SizedBox(
+                      width: ScreenUtil().setWidth(12),
+                    ),
+                    Text(job["pub_time"].toString(),
+                        style: TextStyle(
+                            fontSize: ScreenUtil().setSp(28),
+                            color: Colors.black54)),
                   ],
                 ),
 

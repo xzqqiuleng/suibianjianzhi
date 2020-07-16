@@ -149,117 +149,16 @@ class _CompanyDetailState extends State<CompanyDetail> {
       isSvae = false;
     }
 
-//    _loadData();
-  _testData();
+    _loadData();
+//  _testData();
   }
-  _testData(){
-    var data={
-      "company": {
-        "summary": "<div style=\"width:100%;height:auto; overflow:hidden\" id=\"com_content\" class=\"company_img_auto\"> \n <p><span style=\"color: rgb(51, 51, 51); font-family: &quot;PingFang SC&quot;, &quot;Microsoft Yahei&quot;, Arial, sans-serif; font-size: 14px; background-color: rgb(255, 255, 255);\">网络科技领域内的技术推广、技术咨询、技术转让、技术服务，软件开发，互联网信息服务；人才中介服务；教育咨询，企业管理咨询，设计、代理、制作国内各类广告；日用品、电子产品、计算机、数码产品、护肤品、通讯设备、辅助设备、工艺品、首饰、服装销售；门窗安装(依法须经批准的项目,经相关部门批准后方可开展经营活动)</span></p> \n</div> \n<div class=\"company_show_more none\"> \n <a href=\"javascript:;\" onclick=\"showcc()\">查看更多</a> \n</div>",
-        "handle_rate": "0%",
-        "address": "地址：浔阳区",
-        "job_num": "6",
-        "login_time": "未登录",
-        "name": "江西鑫锦科技有限公司",
-        "label": [
-          "江西 - 九江",
-          "计算机/互联网",
-          "民营企业",
-          "200-500人"
-        ],
-        "invite_num": "0"
-      },
-      "comShowJob": [
-        {
-          "address": "北京",
-          "pub_time": "2020-04-16",
-          "href": "http://www.zaojiong.com/job/170.html",
-          "label": [
-            "不限经验",
-            "初中以上学历"
-          ],
-          "title": "招聘淘宝运营兼职",
-          "salary": "6000-9000元/月"
-        },
-        {
-          "address": "全国不限",
-          "pub_time": "2020-04-01",
-          "href": "http://www.zaojiong.com/job/170.html",
-          "label": [
-            "不限经验",
-            "初中以上学历"
-          ],
-          "title": "招聘淘宝运营兼职",
-          "salary": "6000-9000元/月"
-        },
-        {
-          "address": "全国不限",
-          "pub_time": "2020-03-19",
-          "href": "http://www.zaojiong.com/job/170.html",
-          "label": [
-            "不限经验",
-            "初中以上学历"
-          ],
-          "title": "招聘淘宝运营兼职",
-          "salary": "8000-15000元/月"
-        },
-        {
-          "address": "昆明",
-          "pub_time": "2020-03-16",
-          "href": "http://www.zaojiong.com/job/170.html",
-          "label": [
-            "不限经验",
-            "初中以上学历"
-          ],
-          "title": "招聘淘宝运营兼职",
-          "salary": "6000-16000元/月"
-        },
-        {
-          "address": "全国不限",
-          "pub_time": "2020-03-16",
-          "href": "http://www.zaojiong.com/job/170.html",
-          "label": [
-            "不限经验",
-            "初中以上学历"
-          ],
-          "title": "招聘淘宝运营兼职",
-          "salary": "6000-12000元/月"
-        }
-      ]
-    };
-    setState(() {
-      infors = data["company"];
-      List  jobList = data["comShowJob"];
-      datalist.clear();
-      datalist.addAll(jobList);
 
-      if(infors["label"] !=null && infors["label"] != "") {
-        List labels = infors["label"];
-        for (var item in labels) {
-          if (labelStr == "暂未填写公司福利") {
-            labelStr = item.toString();
-          } else {
-            labelStr = labelStr + "  |  " + item.toString();
-          }
-        }
-      }
-
-      SaveDatas["name"] = infors["name"];
-      SaveDatas["label"] = infors["label"];
-      SaveDatas["address"] = infors["address"];
-      SaveDatas["job_num"] = infors["job_num"];
-
-
-    });
-
-  }
   _loadData(){
 
     new MiviceRepository().getJzCompanyDetail(widget.url).then((value) {
       var reponse = json.decode(value.toString());
-      if(reponse["status"] == "success"){
-        var   data = reponse["result"];
 
+        var   data = reponse;
 
         setState(() {
           infors = data["company"];
@@ -286,7 +185,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
 
         });
 
-      }
+
     });
   }
 //  void _getContent(){
@@ -462,7 +361,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
                                               height: 8,
                                             ),
                                             Text(
-                                            "${infors["job_num"]}个" ,
+                                           infors == null?"": "${infors["job_num"]}个" ,
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
@@ -493,7 +392,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
                                               height: 8,
                                             ),
                                             Text(
-                                                "${int.parse(infors["invite_num"].toString())+1}个" ,
+                                              infors == null?"":  "${int.parse(infors["invite_num"].toString())+1}个" ,
                                               style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
@@ -799,7 +698,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
                                Navigator.push(
                                    context,
                                    MaterialPageRoute(
-                                     builder: (context) => JobDetail(0,url:datalist[index]["url"]),
+                                     builder: (context) => JobDetail(0,url:datalist[index]["href"]),
                                    ));
                              },
                               behavior: HitTestBehavior.opaque,

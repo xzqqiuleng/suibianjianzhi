@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/model/identity_model.dart';
+import 'package:recruit_app/pages/JxPageTab.dart';
 import 'package:recruit_app/pages/boss/boss.dart';
 import 'package:recruit_app/pages/companys/company_jobslist.dart';
 import 'package:recruit_app/pages/companys/company_list.dart';
@@ -30,9 +31,9 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _bossWidget = <Widget>[
-    EmployeeList(),
-    MsgList(),
-    BossMine(),
+    HomePage(),
+    JXPageTab(),
+    MeJz(),
   ];
 
 
@@ -42,7 +43,7 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
       icon: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Image.asset(
-          'images/ic_nav_tab_geeks_unselect.png',
+          'images/btab1.png',
           width: 24,
           height: 24,
           fit: BoxFit.contain,
@@ -51,19 +52,19 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
       activeIcon: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Image.asset(
-          'images/ic_nav_tab_geeks_select.png',
+          'images/btab1on.png',
           width: 24,
           height: 24,
           fit: BoxFit.contain,
         ),
       ),
-      title: Text('人才'),
+      title: Text('找兼职'),
     ),
     BottomNavigationBarItem(
       icon: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Image.asset(
-          'images/ic_nav_tab_msg_unselect.png',
+          'images/b_tab2.png',
           width: 24,
           height: 24,
           fit: BoxFit.contain,
@@ -72,19 +73,19 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
       activeIcon: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Image.asset(
-          'images/ic_nav_tab_msg_select.png',
+          'images/b_tab2on.png',
           width: 24,
           height: 24,
           fit: BoxFit.contain,
         ),
       ),
-      title: Text('消息'),
+      title: Text('精选'),
     ),
     BottomNavigationBarItem(
       icon: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Image.asset(
-          'images/ic_nav_tab_my_unselect.png',
+          'images/b_tab3.png',
           width: 24,
           height: 24,
           fit: BoxFit.contain,
@@ -93,7 +94,7 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
       activeIcon: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Image.asset(
-          'images/ic_nav_tab_my_select.png',
+          'images/b_tab3on.png',
           width: 24,
           height: 24,
           fit: BoxFit.contain,
@@ -209,15 +210,12 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<IdentityModel>(builder: (context, model, child) {
-        return model.identity == Identity.boss
-            ? _bossWidget.elementAt(model.selectedIndex)
-            : _widgetOptions.elementAt(model.selectedIndex);
+        return _bossWidget.elementAt(model.selectedIndex);
       }),
       bottomNavigationBar: Consumer<IdentityModel>(
         builder: (context, model, child) {
           return BottomNavigationBar(
-            items:
-            model.identity == Identity.boss ? _bossBottoms : _widgetBottoms,
+            items: _bossBottoms,
             type: BottomNavigationBarType.fixed,
             backgroundColor: Color.fromRGBO(255, 255, 255, 1),
             currentIndex: model.selectedIndex,

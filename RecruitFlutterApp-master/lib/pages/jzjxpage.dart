@@ -11,8 +11,8 @@ import 'jobs/job_row_item.dart';
 import 'blur_rect.dart';
 
 class JZJXPage extends StatefulWidget{
-  String url;
- JZJXPage(this.url);
+  int type;
+ JZJXPage(this.type);
 
   @override
   _JZState createState() {
@@ -28,6 +28,38 @@ class _JZState extends State<JZJXPage>{
   int page;
   List data =List();
  String url;
+  List<String> txtS=["校内兼职推荐","线上兼职专场","兼职赚钱攻略","潮兼职，等你来"];
+
+  String url1 ="http://www.zaojiong.com/job/?c=search&keyword=%E6%A0%A1&minsalary=&maxsalary=";
+  String url2 ="http://www.zaojiong.com/job/list/985-0-0-0_0_0_0_0_0_0_0-0-0-0-1.html";
+  String url3 ="http://www.zaojiong.com/job/?c=search&keyword=%E5%B8%88&keyword=%E9%92%B1&minsalary=&maxsalary=";
+  String url4 ="http://www.zaojiong.com/job/?c=search&keyword=%E9%92%B1&keyword=%E6%96%B0&minsalary=&maxsalary=";
+  List<String> imageZs =["images/zt1.jpg","images/zt2.png","images/zt3.png","images/zt4.jpg"];
+  String head_icon;
+  String text;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    switch(widget.type){
+      case 0:
+        url = url1;
+        break;
+      case 1:
+        url = url2;
+        break;
+      case 2:
+        url = url3;
+        break;
+      case 3:
+        url = url4;
+        break;
+    }
+    head_icon = imageZs[widget.type];
+    text = txtS[widget.type];
+  }
   _OnRefresh(){
 
     new MiviceRepository().getJzList(url).then((value) {
@@ -39,7 +71,6 @@ class _JZState extends State<JZJXPage>{
           data = reponse["result"];
         });
         print(data);
-        page++;
 
       }
       _refreshController.refreshCompleted();
@@ -74,7 +105,7 @@ class _JZState extends State<JZJXPage>{
                         topRight: Radius.circular(10.0),
                       ),
                       image: DecorationImage(
-                          image: AssetImage("images/banner_zp.png"),
+                          image: AssetImage(head_icon),
                           fit: BoxFit.cover) //设置图片的填充模式
                   ),
                   margin: EdgeInsets.only(bottom: ScreenUtil().setHeight(20)),
@@ -86,7 +117,7 @@ class _JZState extends State<JZJXPage>{
                   sigmaX: 5,
                 ),
                 Text(
-                  "精选",
+                    text,
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

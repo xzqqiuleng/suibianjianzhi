@@ -13,8 +13,8 @@ import 'home_joblist.dart';
 
 
 class HomePage extends StatefulWidget {
-  final double _homeTopBannerHeight = 100;
-  final double _homeTopicHeight = 200;
+  final double _homeTopBannerHeight = 180;
+  final double _homeTopicHeight = 280;
   @override
   State<StatefulWidget> createState() {
 
@@ -144,20 +144,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   fetchData()  {
 
       setState(() {
-          BannerModel bannerModel1 = BannerModel(imageUrl: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3778115985,3313781102&fm=26&gp=0.jpg",link: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3778115985,3313781102&fm=26&gp=0.jpg");
-          BannerModel bannerModel2 = BannerModel(imageUrl: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3842951066,2465592920&fm=26&gp=0.jpg");
+          BannerModel bannerModel1 = BannerModel(imageUrl: "http://116.62.45.24/imgs/head/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20200716203705.jpg",link: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3778115985,3313781102&fm=26&gp=0.jpg");
+          BannerModel bannerModel2 = BannerModel(imageUrl: "http://116.62.45.24/imgs/head/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20200716203716.png");
         this.topBannerDatas.add(bannerModel1);
         this.topBannerDatas.add(bannerModel2);
 
 
-        TopicTabModel tabModel1 = TopicTabModel(picture: "images/home_tab1.png",link: "职位库");
-        TopicTabModel tabModel2 = TopicTabModel(picture: "images/home_tab2.png",link: "找工作");
-        TopicTabModel tabModel3 = TopicTabModel(picture: "images/home_tab3.png",link: "急聘");
-        TopicTabModel tabModel4 = TopicTabModel(picture: "images/home_tab4.png",link: "官方保障");
+        TopicTabModel tabModel1 = TopicTabModel(picture: "images/mid1.png",link: "职位库");
+        TopicTabModel tabModel2 = TopicTabModel(picture: "images/mid2.png",link: "找工作");
+
         this.topicTabMenus.add(tabModel1);
         this.topicTabMenus.add(tabModel2);
-        this.topicTabMenus.add(tabModel3);
-        this.topicTabMenus.add(tabModel4);
+
 
       });
 

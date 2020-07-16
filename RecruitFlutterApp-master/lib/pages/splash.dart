@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:recruit_app/pages/home/recruit_home_app.dart';
 import 'package:recruit_app/pages/jzjxpage.dart';
 
 class Splash extends StatelessWidget {
@@ -10,7 +11,7 @@ class Splash extends StatelessWidget {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => JZJXPage("1111"),
+            builder: (context) => RecruitHomeApp(),
           ));
 
     });

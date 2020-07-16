@@ -59,24 +59,18 @@ class HomeHeadPlan extends StatelessWidget {
 
 
                 },
-                child:new Column(
-                children: [
-                Image(
-        width: 50,
-        height: 50,
-        image: AssetImage(model.picture),
-        ),
-        SizedBox(
-        height: 5,
-        ),
-        Text(
-        model.link,
-        style: TextStyle(
-        fontWeight: FontWeight.w500
-        ),
-        )
-        ],
-        )
+                child:
+                Container(
+                  margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
+                  height: 120,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(model.picture),
+                      fit: BoxFit.fill,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
         )
         );
         }).toList(),
