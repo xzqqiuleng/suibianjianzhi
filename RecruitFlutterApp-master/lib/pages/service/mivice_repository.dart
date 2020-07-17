@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:recruit_app/pages/share_helper.dart';
 
 class MiviceRepository{
 
-  static String baseUrl = 'http://116.62.45.24/crawler/';      //开发
+//  static String baseUrl = 'http://116.62.45.24/crawler/';      //开发
 
-//  static String baseUrl = 'http://192.168.1.14:8080/';      //开发
+  static String baseUrl = 'http://192.168.1.14:8080/';      //开发
   static String socketUrl = 'ws://192.168.1.14:8080/ws/msg?';      //开发
 
   static Dio dio;
@@ -86,6 +87,10 @@ class MiviceRepository{
     });
     return response;
   }
+  Future getHomeBaner() async {
+    var response = await dio.post<Map>('/banner/getBanners');
+    return response;
+  }
   Future getCompanyDetail(int jobId) async {
     var response = await dio.post<Map>('/company/info',queryParameters: {
 
@@ -100,21 +105,28 @@ class MiviceRepository{
     });
     return response;
   }
-  Future registerPd(String phone,String pwd,int type) async {
+  Future registerPd(String phone,String pwd) async {
     var response = await dio.post<Map>('/user/register',data: {
 
       'phone': phone,
       'password': pwd,
-      'type': type,
     });
     return response;
   }
-  Future loginPd(String phone,String pwd,int type) async {
+
+  Future upDateInfo(String key,String info) async {
+    var response = await dio.post<Map>('/user/edit',data: {
+       "id":ShareHelper.getUser().id,
+      key: info,
+    });
+    return response;
+  }
+  Future loginPd(String phone,String pwd) async {
     var response = await dio.post<Map>('/user/login',data: {
 
-      'user_mail': phone,
+      'phone': phone,
       'password': pwd,
-      'type': type,
+
     });
     return response;
   }
@@ -154,4 +166,22 @@ class MiviceRepository{
     });
     return response;
   }
+  Future getWxID()async{
+    var response = await dio.post<Map>('/wx/getWxList');
+    return response;
+  }
+
+  static Future upLoadPicture(String path) async{
+    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+    var image = await MultipartFile.fromFile(
+      path,
+      filename: name,
+    );
+    FormData formData = FormData.fromMap({
+      "file": image
+    });
+    var response = await Dio().post('http://62.60.174.78:8088/upload', data: formData);
+    return response;
+  }
+
 }

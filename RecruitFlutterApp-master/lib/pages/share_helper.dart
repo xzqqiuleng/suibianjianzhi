@@ -121,7 +121,7 @@ class ShareHelper{
 
 
  static bool isHaveData(String url,String type){
-   String key = getUser().userId+type;
+   String key = getUser().id+type;
    if(StorageManager.sharedPreferences != null && StorageManager.sharedPreferences.getString(key) !=null&&StorageManager.sharedPreferences.getString(key) !=""){
      List <dynamic> searchLists= json.decode(StorageManager.sharedPreferences.getString(key));
     for(var ite in searchLists ){
@@ -136,7 +136,7 @@ class ShareHelper{
    }
  }
  static void deletData(String url,String type){
-   String key = getUser().userId+type;
+   String key = getUser().id+type;
    if(StorageManager.sharedPreferences != null && StorageManager.sharedPreferences.getString(key) !=null&&StorageManager.sharedPreferences.getString(key) !=""){
      List <dynamic> searchLists= json.decode(StorageManager.sharedPreferences.getString(key));
      for(var ite in searchLists ){
@@ -150,7 +150,7 @@ class ShareHelper{
    }
  }
  static void saveData(Map job,String type){
-   String key = getUser().userId+type;
+   String key = getUser().id+type;
    List <dynamic> searchLists;
    if(StorageManager.sharedPreferences != null && StorageManager.sharedPreferences.getString(key) !=null&&StorageManager.sharedPreferences.getString(key) !=""){
      searchLists = json.decode(StorageManager.sharedPreferences.getString(key));

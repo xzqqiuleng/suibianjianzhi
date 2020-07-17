@@ -48,7 +48,7 @@ class _ForgetState extends State<RegPage>{
        showToast("两次密码输入不一致");
     }else {
 
-      MiviceRepository().registerPd(_phoneController.text, _newPdController.text, 0).then((value) {
+      MiviceRepository().registerPd(_phoneController.text, _newPdController.text).then((value) {
         var reponse = json.decode(value.toString());
 
         //"result": {
@@ -65,11 +65,7 @@ class _ForgetState extends State<RegPage>{
         User user = User.fromJson(data);
           StorageManager.localStorage.setItem(ShareHelper.kUser, user);
           StorageManager.sharedPreferences.setBool(ShareHelper.is_Login, true);
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RecruitHomeApp(),
-              ));
+         Navigator.of(context).pop(true);
         }else{
           showToast(reponse["msg"]);
         }

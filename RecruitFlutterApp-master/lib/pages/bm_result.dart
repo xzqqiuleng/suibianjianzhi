@@ -1,17 +1,46 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/btn_widget.dart';
+import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BmResult extends StatefulWidget {
+  Map jobInfo ;
+  BmResult(this.jobInfo);
   @override
   _BmResultState createState() => _BmResultState();
 }
+ String wx="";
 
 class _BmResultState extends State<BmResult> {
+
+  _loadData(){
+
+    new MiviceRepository().getWxID().then((value) {
+      var reponse = json.decode(value.toString());
+      if(reponse["status"] == "success"){
+         List wxS = reponse["result"];
+         if(wxS.length>0){
+           var rng = new Random();
+         int pos =  rng.nextInt(wxS.length);
+         setState(() {
+
+           wx = wxS[pos]["wx_num"].toString();
+         });
+
+         }
+
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _loadData();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -110,7 +139,7 @@ class _BmResultState extends State<BmResult> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
-                                Text("饿了么安排车，包吃包住，好吃好好喝",
+                                Text(widget.jobInfo["title"],
 
                                     style: const TextStyle(
                                         wordSpacing: 1,
@@ -121,7 +150,7 @@ class _BmResultState extends State<BmResult> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Text("1000/月",
+                                Text(widget.jobInfo["salary"],
                                     style: const TextStyle(
                                         wordSpacing: 1,
                                         letterSpacing: 1,
@@ -181,7 +210,7 @@ class _BmResultState extends State<BmResult> {
                                       border: new Border.all(color:  Colors.black12, width: 1),
                                     ),
                                     child: Text(
-                                      "微信号； 11111111111111",
+                                      "微信号： ${wx}",
                                       style: TextStyle(
                                           color: Colors.black
                                       ),
@@ -193,7 +222,7 @@ class _BmResultState extends State<BmResult> {
                                 ),
                                 CustomBtnWidget(
                                   onPressed: (){
-                                    Clipboard.setData(ClipboardData(text: '复制到剪切板'));
+                                    Clipboard.setData(ClipboardData(text: wx));
                                     launch("weixin://");
                                   },
                                   margin: 0,

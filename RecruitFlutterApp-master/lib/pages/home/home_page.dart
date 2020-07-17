@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:recruit_app/model/banner_model.dart';
 import 'package:recruit_app/model/topictab_model.dart';
@@ -5,6 +7,7 @@ import 'package:recruit_app/pages/city_page.dart';
 import 'package:recruit_app/pages/home/search_bar.dart';
 import 'package:recruit_app/pages/jobs/city_filter.dart';
 import 'package:recruit_app/pages/select_city.dart';
+import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/share_helper.dart';
 import 'package:recruit_app/pages/utils/screen.dart';
 import 'home_headplan.dart';
@@ -79,10 +82,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     this._autoScroll = true;
   }
 
+  void getBanner(){
+    new MiviceRepository().getHomeBaner().then((value) {
+      var reponse = json.decode(value.toString());
+      if(reponse["status"] == "success") {
+        var data = reponse["result"];
+      }
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getBanner();
     _city = ShareHelper.getCity() == ""?"全部":ShareHelper.getCity();
     _mainScrollable =true;
     _contentScrollable =false;

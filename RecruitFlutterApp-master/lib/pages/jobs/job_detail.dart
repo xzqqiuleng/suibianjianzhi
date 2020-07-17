@@ -794,11 +794,17 @@ class _JobDetailState extends State<JobDetail> {
                     onPressed: () {
 //                      Navigator.push(context,
 //                          MaterialPageRoute(builder: (context) => ChatRoom(head_icon: userImg,title: user,reply_id: "",)));
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => BmResult()));
-                    },
+                     if(ShareHelper.isLogin()){
+                       Navigator.push(context,
+                           MaterialPageRoute(builder: (context) => BmResult(jobInfo)));
+                     }else{
+                       Navigator.push(context,
+                           MaterialPageRoute(builder: (context) => LoginPdPage()));
+                     }
+
+                  },
                     textColor: Colors.white,
-                    child: Text("立即沟通"),
+                    child: Text("立即报名"),
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0)),

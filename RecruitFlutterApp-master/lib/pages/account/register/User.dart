@@ -1,52 +1,56 @@
 class User {
-  String userSex;
-  String userMail;
-  String mail;
-  String userId;
-  String userName;
-  String headImg;
-  String birth;
-  String type;
+  String sex;
+  String phone;
+  String id;
+  String nick_name;
+  String head_img;
+  String education;
   String wxId;
-  int status;
+  String birthday;
+  String desc;
+  String school;
+  String work;
 
   User(
-      {this.userSex,
-        this.userMail,
-        this.mail,
-        this.userId,
-        this.userName,
-        this.headImg,
-        this.birth,
-        this.type,
+      {this.sex,
+        this.phone,
+        this.id,
+        this.nick_name,
+        this.head_img,
+        this.education,
         this.wxId,
-        this.status});
+        this.birthday,
+        this.desc,
+        this.school,
+        this.work});
 
   User.fromJson(Map<String, dynamic> json) {
-    userSex = json['user_sex'];
-    userMail = json['user_mail'];
-    mail = json['mail'];
-    userId = json['user_id'];
-    userName = json['user_name'];
-    headImg = json['head_img'];
-    birth = json['birth'];
-    type = json['type'].toString();
-    wxId = json['wx_id'];
-    status = json['status'];
+    sex = json['sex'];
+    phone = json['phone'];
+    id = json['id'].toString();
+    nick_name = json['nick_name'];
+    head_img = json['head_img'];
+    education = json['education'];
+    wxId = json['wxId'];
+    birthday = json['birthday'];
+    desc = json['desc'];
+    school = json['school'];
+    work = json['work'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user_sex'] = this.userSex;
-    data['user_mail'] = this.userMail;
-    data['mail'] = this.mail;
-    data['user_id'] = this.userId;
-    data['user_name'] = this.userName;
-    data['head_img'] = this.headImg;
-    data['birth'] = this.birth;
-    data['type'] = this.type;
-    data['wx_id'] = this.wxId;
-    data['status'] = this.status;
+    data['sex'] = this.sex;
+    data['phone'] = this.phone;
+    data['id'] = this.id;
+    data['nick_name'] = this.nick_name;
+    data['head_img'] = this.head_img;
+    data['education'] = this.education;
+    data['wxId'] = this.wxId;
+    data['birthday'] = this.birthday;
+    data['desc'] = this.desc;
+    data['school'] = this.school;
+    data['work'] = this.work;
     return data;
   }
 }
