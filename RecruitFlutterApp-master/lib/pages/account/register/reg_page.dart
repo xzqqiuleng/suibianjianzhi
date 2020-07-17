@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/account/register/User.dart';
 import 'package:recruit_app/pages/account/register/code_send_btn.dart';
+import 'package:recruit_app/pages/event_heper.dart';
 import 'package:recruit_app/pages/home/recruit_home_app.dart';
 import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/share_helper.dart';
@@ -65,6 +66,7 @@ class _ForgetState extends State<RegPage>{
         User user = User.fromJson(data);
           StorageManager.localStorage.setItem(ShareHelper.kUser, user);
           StorageManager.sharedPreferences.setBool(ShareHelper.is_Login, true);
+          eventBus.fire(new LoginEvent());
          Navigator.of(context).pop(true);
         }else{
           showToast(reponse["msg"]);

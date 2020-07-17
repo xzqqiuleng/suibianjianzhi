@@ -4,6 +4,7 @@ import 'package:flutter_tag_layout/flutter_tag_layout.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/companys/company_search.dart';
 import 'package:recruit_app/pages/employe/employsearch_page.dart';
+import 'package:recruit_app/pages/jzpage.dart';
 import 'package:recruit_app/pages/storage_manager.dart';
 import '../share_helper.dart';
 import 'jobsearch_page.dart';
@@ -30,14 +31,14 @@ class _JobCompanySearchState extends State<JobCompanySearch> {
   void initState() {
     
     if(widget.searchType == SearchType.job){
-      hotlabels.add("销售");
-      hotlabels.add("客服");
-      hotlabels.add("电气");
-      hotlabels.add("电商");
-      hotlabels.add("运维");
-      hotlabels.add("财务");
-      hotlabels.add("java");
-      hotlabels.add("保险");
+      hotlabels.add("传单");
+      hotlabels.add("服务员");
+      hotlabels.add("业余");
+      hotlabels.add("周末");
+      hotlabels.add("校园");
+      hotlabels.add("学生");
+      hotlabels.add("主播");
+      hotlabels.add("配送");
 
       historylabels = ShareHelper.getSearchJob();
     }else if(widget.searchType == SearchType.company){
@@ -68,16 +69,10 @@ class _JobCompanySearchState extends State<JobCompanySearch> {
         var str = hotlabels[i];
         hotList.add(GestureDetector(
           onTap: (){
-            if(widget.searchType==SearchType.job){
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => JobSearchPage(hotlabels[i])));
-            }else if(widget.searchType==SearchType.company){
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => CompanySearch(hotlabels[i])));
-            }else{
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => EmploySearchPage(hotlabels[i])));
-            }
+
+            ShareHelper.putSearchJob(str);
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (context) => JZPage(str)));
 
           },
           child:TextTagWidget("$str",
@@ -104,16 +99,10 @@ class _JobCompanySearchState extends State<JobCompanySearch> {
         var str = historylabels[i];
         historyList.add(GestureDetector(
           onTap: (){
-            if(widget.searchType==SearchType.job){
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => JobSearchPage(historylabels[i])));
-            }else if(widget.searchType==SearchType.company){
-              Navigator.pushReplacement(context, MaterialPageRoute(
-                  builder: (context) => CompanySearch(historylabels[i])));
-            }else{
+
+            ShareHelper.putSearchJob(str);
             Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => EmploySearchPage(historylabels[i])));
-            }
+                builder: (context) => JZPage(str)));
 
           },
           child:TextTagWidget("$str",
@@ -216,20 +205,10 @@ class _JobCompanySearchState extends State<JobCompanySearch> {
                                   if(text.trim().length <=0){
                                     return;
                                   }
-                                  if(widget.searchType==SearchType.job){
 
-                                    ShareHelper.putSearchJob(text);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => JobSearchPage(text)));
-                                  }else if (widget.searchType==SearchType.company){
-                                    ShareHelper.putSearchCompany(text);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => CompanySearch(text)));
-                                  }else {
-                                    ShareHelper.putSearchJl(text);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(
-                                        builder: (context) => EmploySearchPage(text)));
-                                  }
+                                  ShareHelper.putSearchJob(text);
+                                  Navigator.pushReplacement(context, MaterialPageRoute(
+                                      builder: (context) => JZPage(text)));
                                 },
                               ),
                             ),

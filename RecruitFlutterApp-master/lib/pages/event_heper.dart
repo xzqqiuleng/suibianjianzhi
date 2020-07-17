@@ -6,3 +6,6 @@ class JobRefreshEvent {
   int type;
   JobRefreshEvent(this.txt,this.type);
 }
+class LoginEvent {
+  LoginEvent();
+}

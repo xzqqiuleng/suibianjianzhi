@@ -149,6 +149,15 @@ class ShareHelper{
      }
    }
  }
+
+
+ static void saveBanner(List data,String key){
+
+   StorageManager.sharedPreferences.setString(key, json.encode(data));
+
+
+ }
+
  static void saveData(Map job,String type){
    String key = getUser().id+type;
    List <dynamic> searchLists;

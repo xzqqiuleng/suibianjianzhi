@@ -1,4 +1,4 @@
-package com.pinpin.jobwork
+package com.suibian.jobwork
 
 import android.os.Bundle
 import io.flutter.app.FlutterActivity

@@ -8,9 +8,9 @@ import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'jobs/job_detail.dart';
 import 'jobs/job_row_item.dart';
 
-class JZPage extends StatefulWidget{
-  String url;
- JZPage(this.url);
+class JZTitlePage extends StatefulWidget{
+      String title;
+ JZTitlePage(this.title);
 
   @override
   _JZState createState() {
@@ -20,14 +20,21 @@ class JZPage extends StatefulWidget{
 
 }
 
-class _JZState extends State<JZPage>{
+class _JZState extends State<JZTitlePage>{
   RefreshController _refreshController =
   RefreshController(initialRefresh: true);
 
   List data =List();
  String url;
+ int page;
   _OnRefresh(){
- url ="http://www.zaojiong.com/job/?c=search&keyword=${widget.url}&minsalary=&maxsalary=";
+    page = 1;
+    if(widget.title == "网上兼职"){
+      url = "http://www.zaojiong.com/job/list/985-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
+    }else{
+      url = "http://www.zaojiong.com/job/list/45-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
+    }
+
     new MiviceRepository().getJzList(url).then((value) {
       var reponse = json.decode(value.toString());
       if(reponse["status"] == "success"){
@@ -36,14 +43,32 @@ class _JZState extends State<JZPage>{
         setState(() {
           data = reponse["result"];
         });
+        page++;
         print(data);
       }
       _refreshController.refreshCompleted();
     });
   }
   _loadMore(){
+    if(widget.title == "网上兼职"){
+      url = "http://www.zaojiong.com/job/list/985-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
+    }else{
+      url = "http://www.zaojiong.com/job/list/45-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
+    }
 
+    new MiviceRepository().getJzList(url).then((value) {
+      var reponse = json.decode(value.toString());
+      if(reponse["status"] == "success"){
+        List  loaddata = reponse["result"];
+        setState(() {
+          data.addAll(loaddata);
+        });
+
+        page++;
+
+      }
       _refreshController.loadComplete();
+    });
 
   }
   @override
@@ -54,7 +79,7 @@ class _JZState extends State<JZPage>{
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: Text(widget.url,
+        title: Text(widget.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(

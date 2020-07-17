@@ -86,7 +86,28 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     new MiviceRepository().getHomeBaner().then((value) {
       var reponse = json.decode(value.toString());
       if(reponse["status"] == "success") {
-        var data = reponse["result"];
+        List data = reponse["result"];
+        List bannStr1 = List();
+        List bannStr2 = List();
+        List bannStr3 = List();
+        for (var itme in data) {
+          if (itme["level"].toString() == "one") {
+            bannStr1.add(itme);
+          } else if (itme["level"].toString() == "two") {
+            bannStr2.add(itme);
+          } else if (itme["level"].toString() == "three") {
+            bannStr3.add(itme);
+          }
+        }
+        if(bannStr1.length>0){
+          ShareHelper.saveBanner(bannStr1, "one");
+        }
+        if(bannStr2.length>0){
+          ShareHelper.saveBanner(bannStr1, "two");
+        }
+        if(bannStr3.length>0){
+          ShareHelper.saveBanner(bannStr1, "three");
+        }
       }
     });
   }
@@ -163,8 +184,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         this.topBannerDatas.add(bannerModel2);
 
 
-        TopicTabModel tabModel1 = TopicTabModel(picture: "images/mid1.png",link: "职位库");
-        TopicTabModel tabModel2 = TopicTabModel(picture: "images/mid2.png",link: "找工作");
+        TopicTabModel tabModel1 = TopicTabModel(picture: "images/h_bt1.png",link: "网上兼职",img:"images/bq1.png",txt: "在家也能赚钱！" );
+        TopicTabModel tabModel2 = TopicTabModel(picture: "images/h_bt2.png",link: "线下兼职",img:"images/bq2.png",txt: "高薪兼职推荐！");
 
         this.topicTabMenus.add(tabModel1);
         this.topicTabMenus.add(tabModel2);
@@ -183,7 +204,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
 
   Widget _buildHeadPlanContent() {
-    return HomeHeadPlan(bannerDatas: topBannerDatas,topicTabMenus: topicTabMenus, height: widget._homeTopicHeight,bannerHeight: widget._homeTopBannerHeight);
+    return HomeHeadPlan(bannerDatas: topBannerDatas,topicTabMenus: topicTabMenus, height: widget._homeTopicHeight,bannerHeight: widget._homeTopBannerHeight,navAplpha: _navAplpha,toCity: _rightTabItemPressed,mcity: _city,);
   }
 
 
@@ -239,10 +260,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ),
               titleSpacing: _mainScrollable ? 7.0 : 0.0,
               centerTitle: true,
-              title: _isNavgationBarHidden ? null: SearchBar('images/icon_home_search_20x20_@3x.png',height: 32,
-                backgroudColor: Color.lerp(Colors.white, Colors.black12, _navAplpha),txt: "职位快速搜索",
+              title: _navAplpha != 1 ? null: SearchBar('images/icon_home_search_20x20_@3x.png',height: 32,
+                backgroudColor: Colors.black12,txt: "职位快速搜索",
               ),
-              actions: _isNavgationBarHidden ? null: <Widget>[
+              actions: _isNavgationBarHidden ? Text(""): <Widget>[
                 SizedBox(
                   width: 20,
                 ),
@@ -251,7 +272,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   child: Row(
                     children: <Widget>[
 
-
+                      _navAplpha != 1 ?  Text(""):
                       Image.asset('images/top_local.png',
                           width: 16,
                           height: 16,
@@ -260,7 +281,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         width:4,
                       ),
                       Center(
-                          child:  Text(
+                          child:_navAplpha != 1 ? null: Text(
                             _city,
                             style: TextStyle(
                               color: Color.lerp(Colors.white, Colors.black87, _navAplpha),

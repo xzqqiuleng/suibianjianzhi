@@ -156,11 +156,13 @@ void initState() {
          saNum = "0";
          jlNum = event.txt;
        }
+      _OnRefresh();
+       _refreshController.requestRefresh(needMove: false);
 
-       _OnRefresh();
     });
   }
   _OnRefresh(){
+
     page=1;
     url = "http://www.zaojiong.com/job/list/0-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
     new MiviceRepository().getJzList(url).then((value) {
@@ -168,9 +170,12 @@ void initState() {
       if(reponse["status"] == "success"){
         data.clear();
 
-        setState(() {
-          data = reponse["result"];
-        });
+        if(mounted){
+          setState(() {
+            data = reponse["result"];
+          });
+        }
+
         print(data);
         page++;
 

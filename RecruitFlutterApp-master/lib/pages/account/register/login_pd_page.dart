@@ -8,6 +8,7 @@ import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/account/register/User.dart';
 import 'package:recruit_app/pages/account/register/forget_page.dart';
 import 'package:recruit_app/pages/account/register/reg_page.dart';
+import 'package:recruit_app/pages/event_heper.dart';
 import 'package:recruit_app/pages/home/recruit_home_app.dart';
 import 'package:recruit_app/pages/msg/agreement_detail.dart';
 import 'package:recruit_app/pages/service/mivice_repository.dart';
@@ -54,11 +55,8 @@ class _LoginPdState extends State<LoginPdPage>{
         User user = User.fromJson(data);
         StorageManager.localStorage.setItem(ShareHelper.kUser, user);
         StorageManager.sharedPreferences.setBool(ShareHelper.is_Login, true);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RecruitHomeApp(),
-            ));
+        eventBus.fire(new LoginEvent());
+        Navigator.of(context).pop(true);
       }else{
         showToast(reponse["msg"]);
       }

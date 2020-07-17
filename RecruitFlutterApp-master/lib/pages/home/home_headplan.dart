@@ -6,7 +6,9 @@ import 'package:recruit_app/pages/jobs/all/job_libsboard.dart';
 import 'package:recruit_app/pages/jobs/all/joball_page.dart';
 import 'package:recruit_app/pages/jobs/all/jobbz_page.dart';
 import 'package:recruit_app/pages/jobs/all/jobji_page.dart';
+import 'package:recruit_app/pages/jobs/job_company_search.dart';
 import 'package:recruit_app/pages/jobs/job_loc_select.dart';
+import 'package:recruit_app/pages/jz_title_page.dart';
 import 'package:recruit_app/pages/utils/resource.dart';
 import 'package:recruit_app/pages/utils/screen.dart';
 
@@ -21,9 +23,11 @@ class HomeHeadPlan extends StatelessWidget {
 
   final double height;
   final double bannerHeight;
-  
+  double navAplpha = 0.0;
 
-  HomeHeadPlan({Key key,this.bannerDatas,this.bannerHeight,this.topicTabMenus,this.height}):super(key:key);
+   Function toCity;
+  String mcity;
+  HomeHeadPlan({Key key,this.bannerDatas,this.bannerHeight,this.topicTabMenus,this.height,this.navAplpha,this.toCity,this.mcity}):super(key:key);
 
 
 
@@ -38,24 +42,8 @@ class HomeHeadPlan extends StatelessWidget {
               child:GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap:(){
-                  switch(model.link){
-                    case"职位库":
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => JobAllPage()));
-                      break;
-                    case"找工作":
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => JobLocSelelct()));
-                      break;
-                    case"急聘":
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => JobJiPage()));
-                      break;
-                    case"官方保障":
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => JobBzPage()));
-                      break;
-                  }
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => JZTitlePage(model.link)));
 
 
                 },
@@ -69,6 +57,41 @@ class HomeHeadPlan extends StatelessWidget {
                       fit: BoxFit.fill,
                     ),
                     borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Stack(
+                        children: <Widget>[
+                          Positioned(
+                            left: 16,
+                            top:20,
+                            child: Text(
+                              model.link,
+                               style: TextStyle(
+                                 fontSize: 16,
+                                 color: Colors.white,
+                                 fontWeight: FontWeight.bold,
+
+                               ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 16,
+                            bottom:20,
+                            child: Text(
+                              model.txt,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white.withOpacity(0.7),
+
+
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 6,
+                            bottom:6,
+                            child: Image.asset(model.img,height: 30,width: 30,),
+                          ),
+                        ],
                   ),
                 ),
         )
@@ -89,7 +112,84 @@ class HomeHeadPlan extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          new HomeBanner(bannerModels: bannerDatas,height: bannerHeight,placeholder:  globalPlaceHolderImage),
+          Container(
+            height: bannerHeight,
+            color: Colors.white,
+            child: Stack(
+              children: <Widget>[
+                new HomeBanner(bannerModels: bannerDatas,height: bannerHeight-40,placeholder:  globalPlaceHolderImage),
+            navAplpha == 1?  Text(""):Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: 50,
+                  child: Card(
+                    elevation: 0.8,
+                    margin: EdgeInsets.fromLTRB(20, 0, 20, 4),
+                    color: Colors.white,
+                    child: Row(
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: toCity,
+                          behavior: HitTestBehavior.opaque,
+                          child: Row(
+                            children: <Widget>[
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Text(
+                                mcity
+                              ),
+                              SizedBox(
+                                width:2,
+                              ),
+                              Image.asset("images/arrow_h.png",width: 12,height: 20,),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                    Container(
+                      height: 20,
+                      width: 1,
+                      color: Color(0xfff8f8f8),
+                    ),
+//            images/icon_home_search_20x20_@3x.png
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: ()=>  Navigator.push(context,MaterialPageRoute(builder: (context)=>JobCompanySearch(searchType: SearchType.job,))),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SizedBox(
+                                width: 12,
+                              ),
+                            Image.asset("images/icon_home_search_20x20_@3x.png",width: 16,height: 16,),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                  "搜索兼职，看一看",
+                                style: TextStyle(
+                                  color: Colors.grey
+                                ),
+                              ),
+                              SizedBox(
+                                width:4,
+                              ),
+                            ],
+                          ),
+                        )
+
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
 
           new Container(
             alignment: Alignment.center,
