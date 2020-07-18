@@ -231,4 +231,122 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
       ),
     );
   }
+
+
+  TapGestureRecognizer _tapGestureRecognizer1;
+  TapGestureRecognizer _tapGestureRecognizer2;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _tapGestureRecognizer1 = TapGestureRecognizer();
+    _tapGestureRecognizer2 = TapGestureRecognizer();
+
+    _tapGestureRecognizer1.onTap=(){
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AgreementDetailPage(0),
+          ));
+    };
+
+    _tapGestureRecognizer2.onTap=(){
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AgreementDetailPage(1),
+          ));
+    };
+
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+
+      if(StorageManager.sharedPreferences != null &&StorageManager.sharedPreferences.getBool("is_sagree") !=null &&StorageManager.sharedPreferences.getBool("is_sagree")){
+
+
+      }else{
+        _showProtocolDialog(context);
+      }
+
+    });
+  }
+  void _showProtocolDialog(BuildContext context) async{
+
+    await showDialog(context: context,barrierDismissible:false,builder: (BuildContext context){
+
+      return CupertinoAlertDialog(
+
+        title: Text("用户隐私及协议同意?",style: TextStyle(color: Colours.black_1e211c,fontSize: 17,fontWeight: FontWeight.bold),),
+        content:Padding(
+          padding:EdgeInsets.only(top: 20),
+          child: Text.rich(
+
+            TextSpan(
+                children: [
+                  TextSpan(
+
+                    text: "欢迎使用APP。在使用本APP前，请细阅所有条款及细则",
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colours.gray_8A8F8A
+                    ),
+                  ),
+                  TextSpan(
+                    text:  "用户协议",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colours.app_main,
+                      decoration:TextDecoration.underline,
+                    ),
+                    recognizer: _tapGestureRecognizer1, //监听器
+                  ),
+                  TextSpan(
+                    text: "&隐私政策",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colours.app_main,
+                      decoration:TextDecoration.underline,
+                    ),
+                    recognizer: _tapGestureRecognizer2, //监听器
+                  ),
+                  TextSpan(
+                    text:  "只有在您同意并接受所有条款和条件后，您才能开始我们的服务。",
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colours.gray_8A8F8A
+                    ),
+                    recognizer: _tapGestureRecognizer2,
+                  )
+                ]
+            ),
+            textAlign: TextAlign.justify,
+
+          ),
+        ),
+        actions:<Widget>[
+
+          CupertinoDialogAction(
+            child: Text("不同意",style: TextStyle(color: Colours.gray_C8C7CC,fontSize: 17,fontWeight: FontWeight.bold)),
+            onPressed: (){
+              SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+            },
+          ),
+
+          CupertinoDialogAction(
+            child:  Text("同意",style: TextStyle(color: Colours.app_main,fontSize: 17,fontWeight: FontWeight.bold)),
+            onPressed: (){
+
+              Navigator.of(context).pop();
+              StorageManager.sharedPreferences.setBool("is_sagree", true);
+            },
+          ),
+        ],
+      );
+    });
+  }
+
 }

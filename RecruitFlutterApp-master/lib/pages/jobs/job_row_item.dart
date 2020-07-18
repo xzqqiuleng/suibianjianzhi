@@ -184,7 +184,7 @@ class JobRowItem extends StatelessWidget {
                    borderRadius: BorderRadius.circular(2)
                  ),
                  child: Text(
-                   "报名",
+                   "查看",
                    style: TextStyle(
                      color: Colors.white,
                      fontSize: 12

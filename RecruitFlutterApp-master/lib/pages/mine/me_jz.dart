@@ -42,7 +42,6 @@ class _MeJzState extends State<MeJz> {
   void initState() {
     // TODO: implement initState
     super.initState();
-  print(ShareHelper.getUser().nick_name);
 
   setState(() {
     try{
@@ -281,7 +280,7 @@ class _MeJzState extends State<MeJz> {
                           ),
 
                           SizedBox(
-                            height: ScreenUtil().setWidth(76),
+                            height: ScreenUtil().setWidth(70),
                           ),
                           Row(
                             children: <Widget>[

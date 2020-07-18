@@ -22,7 +22,7 @@ class Splash extends StatelessWidget {
     ScreenUtil.init(context, width: 750, height: 1334);
     _autoTurn(context);
     return Scaffold(
-        body:Image.asset("images/iconc_hc.png",width: 20,height: 20,)
+        body:Image.asset("images/timg.jpg",width: 20,height: 20,)
 
     );
   }

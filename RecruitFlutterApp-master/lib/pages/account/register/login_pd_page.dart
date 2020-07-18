@@ -131,8 +131,9 @@ class _LoginPdState extends State<LoginPdPage>{
                                           "注册账号",
                                           style: TextStyle(
 
-                                              fontSize: 13,
-                                              color: Colours.gray_8A8F8A
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold
                                           ),
                                         ) ,
                                       ),

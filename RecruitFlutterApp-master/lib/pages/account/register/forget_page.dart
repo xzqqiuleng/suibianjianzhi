@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobsms/mobsms.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:recruit_app/colours.dart';
@@ -39,12 +40,20 @@ class _ForgetState extends State<ForgetPage>{
     } else if(_newPdController.text != _ConfirmPdController.text){
        showToast("两次密码输入不一致");
     }else {
-
-      MiviceRepository().forgetPd(_phoneController.text, _newPdController.text).then((value) {
-          Navigator.of(context).pop();
+      Smssdk.commitCode(
+          _phoneController.text, "86", _codeController.text, (dynamic ret,
+          Map err) {
+        if (err != null) {
+          print(err);
+        }
+        else {
+          MiviceRepository().forgetPd(
+              _phoneController.text, _newPdController.text).then((value) {
+            Navigator.of(context).pop();
+          });
+        }
       });
     }
-
   }
   @override
   Widget build(BuildContext context) {

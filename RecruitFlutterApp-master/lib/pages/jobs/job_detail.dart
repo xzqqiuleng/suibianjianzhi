@@ -802,15 +802,13 @@ class _JobDetailState extends State<JobDetail> {
 //                          MaterialPageRoute(builder: (context) => ChatRoom(head_icon: userImg,title: user,reply_id: "",)));
                      if(ShareHelper.isLogin()){
 
-                       if(isTd){
-                         ShareHelper.deletData(widget.url,"bm");
-                       }else{
+                       if(!isTd){
                          ShareHelper.saveData(SaveDatas,"bm");
-
+                         setState(() {
+                           isTd = !isTd;
+                         });
                        }
-                       setState(() {
-                         isTd = !isTd;
-                       });
+
 
                        Navigator.push(context,
                            MaterialPageRoute(builder: (context) => BmResult(jobInfo)));

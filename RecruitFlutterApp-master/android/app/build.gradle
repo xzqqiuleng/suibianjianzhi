@@ -25,8 +25,8 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.mob.sdk'
 MobSDK {
-    appKey "m300ee9a78350b"
-    appSecret "c051bb0b1084c5b30c7c92d1def05f0c"
+    appKey "301d2b3fea600"
+    appSecret "77321f7ccc05e1917ff1068eb7c3cb87"
 
 }
 android {

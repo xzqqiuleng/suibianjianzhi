@@ -44,6 +44,7 @@ class HomeBanner extends StatelessWidget {
 
                 }
             },
+              behavior: HitTestBehavior.opaque,
             child: Container(
                 width: Screen.width,
                 margin: new EdgeInsets.symmetric(horizontal: 0.0),

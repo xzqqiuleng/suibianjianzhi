@@ -262,8 +262,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               elevation: _navAplpha == 1 ? 0.2: 0.0,
               leading: _mainScrollable ? null: new IconButton(
                 icon: Image.asset('images/arrow_down.png',
-                  width: 20,
-                  height: 20,
+                  width: 24,
+                  height: 24,
                 ),
                 onPressed: _leftTabItemPressed,
               ),

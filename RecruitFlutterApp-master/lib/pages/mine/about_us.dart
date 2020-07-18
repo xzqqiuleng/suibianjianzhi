@@ -107,7 +107,7 @@ class  _AboutUsWidgetState extends State<AboutUsWidget>{
               ),
             ),
             Gaps.vGap12,
-            Text("随便兼职",
+            Text("随时兼职",
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

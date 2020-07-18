@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mobsms/mobsms.dart';
+import 'package:mobsms/mobsms.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:recruit_app/colours.dart';
@@ -49,29 +51,38 @@ class _ForgetState extends State<RegPage>{
        showToast("两次密码输入不一致");
     }else {
 
-      MiviceRepository().registerPd(_phoneController.text, _newPdController.text).then((value) {
-        var reponse = json.decode(value.toString());
+      Smssdk.commitCode(_phoneController.text,"86", _codeController.text, (dynamic ret, Map err){
+        if(err!=null){
+   print(err);
+        }
+        else
+        {
+          MiviceRepository().registerPd(_phoneController.text, _newPdController.text).then((value) {
+            var reponse = json.decode(value.toString());
 
-        //"result": {
-        //        "user_mail": "15671621652",
-        //        "type": "1",
-        //        "create_time": 1594561222638,
-        //        "user_id": "b0fdb885476d46dab13ccc1a82b98070",
-        //        "user_name": "15671621652"
-        //    },
-        if(reponse["status"] == "success") {
-          var data = reponse["result"];
+            //"result": {
+            //        "user_mail": "15671621652",
+            //        "type": "1",
+            //        "create_time": 1594561222638,
+            //        "user_id": "b0fdb885476d46dab13ccc1a82b98070",
+            //        "user_name": "15671621652"
+            //    },
+            if(reponse["status"] == "success") {
+              var data = reponse["result"];
 
 
-        User user = User.fromJson(data);
-          StorageManager.localStorage.setItem(ShareHelper.kUser, user.toJson());
-          StorageManager.sharedPreferences.setBool(ShareHelper.is_Login, true);
-          eventBus.fire(new LoginEvent());
-         Navigator.of(context).pop(true);
-        }else{
-          showToast(reponse["msg"]);
+              User user = User.fromJson(data);
+              StorageManager.localStorage.setItem(ShareHelper.kUser, user.toJson());
+              StorageManager.sharedPreferences.setBool(ShareHelper.is_Login, true);
+              eventBus.fire(new LoginEvent());
+              Navigator.of(context).pop(true);
+            }else{
+              showToast(reponse["msg"]);
+            }
+          });
         }
       });
+
     }
 
   }
@@ -170,7 +181,7 @@ class _ForgetState extends State<RegPage>{
                                           borderRadius: BorderRadius.circular(6)
                                       ),
                                       child: Center(
-                                        child:Text("确认",
+                                        child:Text("注册",
                                           textAlign: TextAlign.center,
 
                                           style: TextStyle(

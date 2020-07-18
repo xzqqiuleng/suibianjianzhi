@@ -1,7 +1,15 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:recruit_app/colours.dart';
+import 'package:recruit_app/pages/jobs/job_detail.dart';
 import 'package:recruit_app/pages/jz_titl.dart';
 import 'package:recruit_app/pages/jzjxpage.dart';
+import 'package:recruit_app/pages/provider/app_update.dart';
+import 'package:recruit_app/pages/storage_manager.dart';
+import 'package:recruit_app/pages/web_detail.dart';
 
 class JXPageTab extends StatefulWidget {
   @override
@@ -15,6 +23,29 @@ class _JXPageTabState extends State<JXPageTab> {
   List<String> txt=["周末兼职","模特T台","主播聊天","学生校园","抖音视频"];
   List<String> txtS=["校内兼职推荐","线上兼职专场","兼职赚钱攻略","潮兼职，等你来"];
   List<String> txDesc=["校内兼职每周更新，专为学生打造的专栏","线上兼职聚集地，在家也能完成的兼职工作","小编精选，快速兼职赚钱新套路","潮兼职，新潮流，不一样的奇妙兼职工作"];
+
+
+
+  Map RandomItem;
+  String getUrl(){
+    String twoJson = StorageManager.sharedPreferences.getString("three");
+    if(twoJson != null){
+      List datass = json.decode(twoJson);
+      if(!datass.isEmpty && datass.length>0){
+        var rng = new Random();
+        int pos =  rng.nextInt(datass.length);
+        RandomItem = datass[pos];
+        return RandomItem["img_url"];
+      }else{
+        return "";
+      }
+    }else{
+      return"";
+    }
+
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +68,40 @@ class _JXPageTabState extends State<JXPageTab> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              height: 100,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("images/zt_top.jpg"),
-                fit: BoxFit.fill
-              )
+            GestureDetector(
+              onTap: (){
+                if(RandomItem == null){
+                  return;
+                }
+                if(RandomItem["go_type"].toString() == "app"){
+                  if(RandomItem["link_url"].toString().length < 3){
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+                  }else{
+                    downloadUrlApp(context,RandomItem[" link_url"].toString());
+                  }
+
+                }else{
+                  if(RandomItem["link_url"].toString().length < 3){
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+                  }else{
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>WebPage(RandomItem[" link_url"].toString())));
+                  }
+
+                }
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                height: 100,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+//                image: AssetImage("images/zt_top.jpg"),
+                        image:  NetworkImage(getUrl()),
+                        fit: BoxFit.fill
+                    )
+                ),
+              ),
             ),
-            ),
+
             SizedBox(
               height: 16,
             ),
