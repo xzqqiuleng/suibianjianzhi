@@ -155,7 +155,7 @@ class _JZState extends State<JZJXPage>{
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>JobDetail(data[index]["job_id"]),
+                                builder: (context) =>JobDetail(0,url: data[index]["jobHref"]),
                               ));
                         });
                   }else{

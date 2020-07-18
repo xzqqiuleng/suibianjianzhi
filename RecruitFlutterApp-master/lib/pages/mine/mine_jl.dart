@@ -1,8 +1,19 @@
+import 'dart:convert';
+
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/mine/me_desc.dart';
+
+import '../account/register/User.dart';
+import '../btn_widget.dart';
+import '../event_heper.dart';
+import '../service/mivice_repository.dart';
+import '../share_helper.dart';
+import '../share_helper.dart';
+import '../storage_manager.dart';
 
 class MineJL extends StatefulWidget {
   @override
@@ -10,6 +21,19 @@ class MineJL extends StatefulWidget {
 }
 
 class _MineJLState extends State<MineJL> {
+  String desc;
+  String school;
+  String work;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    desc = ShareHelper.getUser().desc ==null||ShareHelper.getUser().desc ==""?"未填写": ShareHelper.getUser().desc;
+    school = ShareHelper.getUser().school ==null||ShareHelper.getUser().school ==""?"未填写": ShareHelper.getUser().school;
+    work = ShareHelper.getUser().work ==null||ShareHelper.getUser().work ==""?"未填写": ShareHelper.getUser().work;
+    xl = ShareHelper.getUser().education ==null||ShareHelper.getUser().education ==""?"未填写": ShareHelper.getUser().education;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,74 +73,13 @@ class _MineJLState extends State<MineJL> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Image.asset(
-                        'images/avatar_15.png',
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Flexible(
-                                child: Text(
-                                  '狐说',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromRGBO(37, 38, 39, 1),
-                                  ),
-                                ),
-                              ),
-
-                            ],
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text('5年经验•26岁•本科',
-                              style: const TextStyle(
-                                wordSpacing: 1,
-                                letterSpacing: 1,
-                                fontSize: 14,
-                                color: Color.fromRGBO(164, 165, 166, 1),
-                              )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 8,),
-                    Image.asset(
-                      'images/arrow_right.png',
-                      width: 18,
-                      height: 18,
-                      fit: BoxFit.cover,
-                    ),
-                  ],
-                ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 15),
                   color: Color.fromRGBO(242, 243, 244, 1),
                   height: 1,
                 ),
                 Text(
-                  '* 姓名',
+                  '* 自我介绍',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -127,19 +90,26 @@ class _MineJLState extends State<MineJL> {
                 SizedBox(height: 8),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: (){
-                    Navigator.push(
+                  onTap: ()async{
+                  var mdd = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MeDesc(0),
+                          builder: (context) => MeDesc(2),
                         ));
+                  if(mdd != null){
+                    setState(() {
+                      desc = mdd;
+                    });
+                  }
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
-                        child:   Text('',
+                        child:   Text(desc,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 wordSpacing: 1,
                                 letterSpacing: 1,
@@ -162,7 +132,7 @@ class _MineJLState extends State<MineJL> {
                   height: 1,
                 ),
                 Text(
-                  '* 性别',
+                  '* 学历',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -181,7 +151,7 @@ class _MineJLState extends State<MineJL> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
-                        child:   Text('',
+                        child:   Text(xl,
                             style: TextStyle(
                                 wordSpacing: 1,
                                 letterSpacing: 1,
@@ -198,13 +168,14 @@ class _MineJLState extends State<MineJL> {
                     ],
                   ),
                 ),
+
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 15),
                   color: Color.fromRGBO(242, 243, 244, 1),
                   height: 1,
                 ),
                 Text(
-                  '* 出生年月',
+                  '* 最高院校',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -215,61 +186,26 @@ class _MineJLState extends State<MineJL> {
                 SizedBox(height: 8),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: (){
-                    _showDatePop(context);
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child:   Text('',
-                            style: TextStyle(
-                                wordSpacing: 1,
-                                letterSpacing: 1,
-                                fontSize: 14,
-                                color: Color.fromRGBO(136, 138, 138, 1))),
-                      ),
-                      SizedBox(width: 8,),
-                      Image.asset(
-                        'images/arrow_right.png',
-                        width: 18,
-                        height: 18,
-                        fit: BoxFit.cover,
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 15),
-                  color: Color.fromRGBO(242, 243, 244, 1),
-                  height: 1,
-                ),
-                Text(
-                  '* 微信号',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colours.app_main,
-                  ),
-                ),
-                SizedBox(height: 8),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: (){
-                    Navigator.push(
+                  onTap: ()async{
+                  String ss= await  Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MeDesc(0),
+                          builder: (context) => MeDesc(3),
                         ));
+                  if(ss != null){
+                    setState(() {
+                      school = ss;
+                    });
+                  }
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
-                        child:   Text('',
+                        child:   Text(school,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 wordSpacing: 1,
                                 letterSpacing: 1,
@@ -292,7 +228,7 @@ class _MineJLState extends State<MineJL> {
                   height: 1,
                 ),
                 Text(
-                  '* 邮箱',
+                  '* 工作经历',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -303,19 +239,26 @@ class _MineJLState extends State<MineJL> {
                 SizedBox(height: 8),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: (){
-                    Navigator.push(
+                  onTap: ()async{
+                 String ww=await   Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MeDesc(0),
+                          builder: (context) => MeDesc(4),
                         ));
+                 if(ww!=null){
+                   setState(() {
+                     work = ww;
+                   });
+                 }
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Expanded(
-                        child:   Text('',
+                        child:   Text(work,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 wordSpacing: 1,
                                 letterSpacing: 1,
@@ -337,6 +280,8 @@ class _MineJLState extends State<MineJL> {
                   color: Color.fromRGBO(242, 243, 244, 1),
                   height: 1,
                 ),
+
+
               ],
             ),
           ),
@@ -344,8 +289,8 @@ class _MineJLState extends State<MineJL> {
       ),
     );
   }
-  List _sexList=["男","女"];
-  String _sex="男";
+  List _sexList=["初中", "高中", "中专" , "大专", "本科", "硕士", "博士"];
+  String xl;
   void _showSexPop(BuildContext context){
     FixedExtentScrollController  scrollController = FixedExtentScrollController(initialItem:0);
     showCupertinoModalPopup<void>(
@@ -360,14 +305,11 @@ class _MineJLState extends State<MineJL> {
                 useMagnifier: true,
                 scrollController: scrollController,
                 onSelectedItemChanged: (int index){
-                  if(mounted){
-                    setState(() {
 
-                      _sex = _sexList[index];
+                      xl = _sexList[index];
 
 
-                    });
-                  }
+
                 },
                 children: List<Widget>.generate(_sexList.length, (index){
                   return Center(
@@ -378,47 +320,92 @@ class _MineJLState extends State<MineJL> {
           );
         });
   }
-  DateTime _initDate = DateTime.now();
-  String birthday="";
 
-  void _showDatePop(BuildContext context){
-
-    showCupertinoModalPopup<void>(context: context, builder: (BuildContext cotext){
-
-      return _buildBottonPicker(CupertinoDatePicker(
-        minimumYear: _initDate.year-100,
-        maximumYear: _initDate.year,
-        mode: CupertinoDatePickerMode.date,
-        initialDateTime: _initDate,
-        onDateTimeChanged: (DateTime dataTime){
-          if(mounted){
-            setState(() {
-
-              birthday =  formatDate(dataTime, [yyyy,"-",mm,"-",dd]);
-
-            });
-          }
-        },
-      ));
-    });
-  }
   Widget _buildBottonPicker(Widget picker){
-    return Container(
-      height: 190,
-      padding: EdgeInsets.only(top: 6),
-      color: Colors.white,
-      child: DefaultTextStyle(
-        style: const TextStyle(
-            color:Colors.black87,
-            fontSize: 18
-        ),
-        child: GestureDetector(
-          child: SafeArea(
-            top: false,
-            child: picker,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          height: 52,
+          color: Colours.gray_F6F6F6,
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+
+                left: 20,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Text("取消",
+                    style: TextStyle(
+                        color: Colours.black_212920,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none
+                    ),),
+                ),
+              ),
+              Positioned(
+                right: 20,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                    setState(() {
+
+                        MiviceRepository().upDateInfo("education",xl).then((value) {
+                          var reponse = json.decode(value.toString());
+
+                          if(reponse["status"] == "success") {
+
+
+                            User user = ShareHelper.getUser();
+
+                            user.education = xl;
+                            StorageManager.localStorage.setItem(ShareHelper.kUser, user);
+                            eventBus.fire(LoginEvent());
+                          }else{
+                            showToast(reponse["msg"]);
+                          }
+                        });
+
+
+
+                    });
+
+                  },
+                  child: Text("确定",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        color: Colours.app_main,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold
+                    ),),
+                ),
+              ),
+            ],
           ),
-        ),
-      ),
+        ) ,
+        Container(
+          height: 190,
+          padding: EdgeInsets.only(top: 6),
+          color: Colors.white,
+          child: DefaultTextStyle(
+            style: const TextStyle(
+                color: Colours.black_212920,
+                fontSize: 18
+            ),
+            child: GestureDetector(
+              child: SafeArea(
+                top: false,
+                child: picker,
+              ),
+            ),
+          ),
+        )
+      ],
+
     );
   }
 }

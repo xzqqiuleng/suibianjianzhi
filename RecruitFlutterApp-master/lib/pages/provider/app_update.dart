@@ -240,7 +240,35 @@ Future downloadApp(BuildContext context, AppUpdateInfo appUpdateInfo) async {
     }
   }
 }
-
+Future downloadUrlApp(BuildContext context, String murl) async {
+  var url = murl;
+  var extDir = await getExternalStorageDirectory();
+  debugPrint('extDir path: ${extDir.path}');
+  String apkPath =
+      '${extDir.path}/tuiguagn.apk';
+  File file = File(apkPath);
+  debugPrint('apkPath path: ${file.path}');
+  if (!file.existsSync()) {
+    // 没有下载过
+    if (await showDownloadDialog(context, url, apkPath) ?? false) {
+      OpenFile.open(apkPath);
+    }
+  } else {
+    var reDownload = await showReDownloadAlertDialog(context);
+    //因为点击android的返回键,关闭dialog时的返回值为null
+    if (reDownload != null) {
+      if (reDownload) {
+        //重新下载
+        if (await showDownloadDialog(context, url, apkPath) ?? false) {
+          OpenFile.open(apkPath);
+        }
+      } else {
+        //直接安装
+        OpenFile.open(apkPath);
+      }
+    }
+  }
+}
 showDownloadDialog(context, url, path) async {
   DateTime lastBackPressed;
   CancelToken cancelToken = CancelToken();

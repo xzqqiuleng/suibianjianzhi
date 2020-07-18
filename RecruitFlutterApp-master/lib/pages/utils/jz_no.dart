@@ -1,50 +1,54 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:recruit_app/pages/companys/company_c_item.dart';
-import 'package:recruit_app/pages/jobs/job_detail.dart';
+import 'package:recruit_app/pages/service/mivice_repository.dart';
+
+import '../jobs/job_detail.dart';
+import '../jobs/job_row_item.dart';
+import '../share_helper.dart';
+import '../share_helper.dart';
+import '../storage_manager.dart';
 
 
-
-
-
-class CompanyJob extends StatefulWidget{
-  List data;
-  CompanyJob(this.data);
+class JZNo extends StatefulWidget{
+  String title;
+ JZNo(this.title);
 
   @override
-  _JobState createState() {
+  _JZState createState() {
     // TODO: implement createState
-    return _JobState();
+    return _JZState();
   }
 
 }
 
-class _JobState extends State<CompanyJob>{
+class _JZState extends State<JZNo>{
   RefreshController _refreshController =
   RefreshController(initialRefresh: true);
 
+  List data =List();
+
   _OnRefresh(){
-    _refreshController.refreshCompleted();
+
+
+
+  _refreshController.refreshCompleted();
   }
   _loadMore(){
     _refreshController.loadComplete();
-  }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
 
   }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      backgroundColor: Color.fromRGBO(248, 248, 248, 1),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: Text("在招职位",
+        title: Text(widget.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -56,8 +60,8 @@ class _JobState extends State<CompanyJob>{
         leading: IconButton(
             icon: Image.asset(
               'images/ic_back_arrow.png',
-              width: 18,
-              height: 18,
+              width: 24,
+              height: 24,
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -73,25 +77,16 @@ class _JobState extends State<CompanyJob>{
           onRefresh: _OnRefresh,
           onLoading: _loadMore,
           enablePullUp: true,
-          child: ListView.builder(itemBuilder: (context, index) {
-            if (widget.data.length >0 && index <widget. data.length) {
-              return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  child: CompanyCItem(
-                      job: widget.data[index],
-                      index: index,
-                      lastItem: index ==  widget.data.length - 1),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => JobDetail( 0,url: widget.data[index]["jobHref"]),
-                        ));
-                  });
-            }
-            return null;
-          },
-            itemCount: widget.data.length,
+          child: Center(
+              child:  Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset("images/empty_work.png",width: 60,height: 60,),
+                  Text(
+                      "暂未搜到相关数据"
+                  )
+                ],
+              )
           )
       )
     );

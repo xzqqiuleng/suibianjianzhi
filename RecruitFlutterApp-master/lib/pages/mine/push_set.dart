@@ -23,8 +23,10 @@ class _PushState extends State<PushSetPage>{
     super.initState();
     PushItem pushItem1 = PushItem(false);
     PushItem pushItem2 = PushItem(false);
+    PushItem pushItem3 = PushItem(false);
     _itmes.add(pushItem1);
     _itmes.add(pushItem2);
+    _itmes.add(pushItem3);
      _addDatas();
   }
   _addDatas(){
@@ -33,8 +35,9 @@ class _PushState extends State<PushSetPage>{
   @override
   Widget build(BuildContext context) {
 
-    _itmes[0].txt = "boss";
-    _itmes[1].txt =  "提醒";
+    _itmes[0].txt = "兼职上新";
+    _itmes[1].txt =  "公司发布";
+    _itmes[2].txt =  "职位申请";
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -82,23 +85,7 @@ class PushSetItemWidget extends StatefulWidget{
 class _PusetItemState extends State<PushSetItemWidget>{
 
   _pushTag(bool value){
-    String tag="";
-    switch(widget.index){
-      case 0:
-        tag ="Service";
-        break;
-      case 1:
-        tag ="Remind";
-        break;
-    }
-    List<String> tags = new List();
-    tags.add(tag);
-    if(value){
 
-
-    }else{
-
-    }
   }
 
   @override

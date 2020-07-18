@@ -42,6 +42,8 @@ class _JobDetailState extends State<JobDetail> {
 
   Map SaveDatas=Map();
  bool isSvae = false;
+ bool isTd = false;
+
 
   _loadData(){
 
@@ -296,7 +298,11 @@ class _JobDetailState extends State<JobDetail> {
     }else{
       isSvae = false;
     }
-
+    if(ShareHelper.isLogin()){
+      isTd = ShareHelper.isHaveData(widget.url,"bm");
+    }else{
+      isTd = false;
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -795,6 +801,17 @@ class _JobDetailState extends State<JobDetail> {
 //                      Navigator.push(context,
 //                          MaterialPageRoute(builder: (context) => ChatRoom(head_icon: userImg,title: user,reply_id: "",)));
                      if(ShareHelper.isLogin()){
+
+                       if(isTd){
+                         ShareHelper.deletData(widget.url,"bm");
+                       }else{
+                         ShareHelper.saveData(SaveDatas,"bm");
+
+                       }
+                       setState(() {
+                         isTd = !isTd;
+                       });
+
                        Navigator.push(context,
                            MaterialPageRoute(builder: (context) => BmResult(jobInfo)));
                      }else{
@@ -804,7 +821,7 @@ class _JobDetailState extends State<JobDetail> {
 
                   },
                     textColor: Colors.white,
-                    child: Text("立即报名"),
+                    child: Text(isTd?"已报名":"立即报名"),
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5.0)),

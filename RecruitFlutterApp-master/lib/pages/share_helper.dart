@@ -132,7 +132,7 @@ class ShareHelper{
 
     return false;
    }else{
-    return true;
+    return false;
    }
  }
  static void deletData(String url,String type){

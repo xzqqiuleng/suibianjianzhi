@@ -13,6 +13,9 @@ import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/share_helper.dart';
 import 'package:recruit_app/widgets/photo_select.dart';
 
+import '../btn_widget.dart';
+import '../event_heper.dart';
+import '../event_heper.dart';
 import '../storage_manager.dart';
 
 class MineInfor extends StatefulWidget {
@@ -301,7 +304,20 @@ class _MineInforState extends State<MineInfor> {
                   color: Color.fromRGBO(242, 243, 244, 1),
                   height: 1,
                 ),
-
+                SizedBox(
+                  height: 30,
+                ),
+                CustomBtnWidget(
+                    btnColor: Colours.app_main,
+                    text: "退出登录",
+                    onPressed: () {
+                      StorageManager.localStorage.deleteItem(ShareHelper.kUser);
+                      StorageManager.sharedPreferences.setBool(
+                          ShareHelper.is_Login, false);
+                      eventBus.fire(LoginEvent());
+                      Navigator.of(context).pop();
+                    }
+                )
 
               ],
             ),

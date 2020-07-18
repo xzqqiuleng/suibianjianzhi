@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +11,11 @@ import 'package:recruit_app/pages/btn_widget.dart';
 import 'package:recruit_app/widgets/dash_line.dart';
 
 import '../constant.dart';
+import '../provider/app_update.dart';
+import '../share_helper.dart';
+import '../storage_manager.dart';
+import '../web_detail.dart';
+import 'job_detail.dart';
 
 class JobRowItem extends StatelessWidget {
   final Map<String,dynamic> job;
@@ -201,18 +209,62 @@ class JobRowItem extends StatelessWidget {
     return Column(
       children: <Widget>[
         jobItem,
-      index != 0 && index % 4 ==0? Container(
+      index != 0 && index % 4 ==0? GestureDetector(
+        onTap: (){
+          if(RandomItem == null){
+            return;
+          }
+          if(RandomItem["go_type"].toString() == "app"){
+            if(RandomItem["link_url"].toString().length < 3){
+              Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+            }else{
+              downloadUrlApp(context,RandomItem[" link_url"].toString());
+            }
+
+          }else{
+            if(RandomItem["link_url"].toString().length < 3){
+              Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+            }else{
+              Navigator.push(context,MaterialPageRoute(builder: (context)=>WebPage(RandomItem[" link_url"].toString())));
+            }
+
+          }
+        },
+        child:Container(
           margin: EdgeInsets.fromLTRB(14, 4, 14, 4),
           height: 100,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("images/mid_ad.jpg"),
+//              image: AssetImage("images/mid_ad.jpg"),
+              image: NetworkImage(getUrl()),
               fit: BoxFit.fill,
             ),
             borderRadius: BorderRadius.circular(4),
           ),
-        ):Container(),
+        )
+      ):Container(),
       ],
     );
+  }
+
+  Map RandomItem;
+  String getUrl(){
+     String twoJson = StorageManager.sharedPreferences.getString("two");
+     if(twoJson != null){
+       List datass = json.decode(twoJson);
+       if(!datass.isEmpty && datass.length>0){
+         var rng = new Random();
+         int pos =  rng.nextInt(datass.length);
+         RandomItem = datass[pos];
+         return RandomItem["img_url"];
+       }else{
+         return "";
+       }
+     }else{
+       return"";
+     }
+
+
+
   }
 }

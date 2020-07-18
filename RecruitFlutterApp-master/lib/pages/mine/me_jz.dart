@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/account/register/login_pd_page.dart';
 import 'package:recruit_app/pages/mine/feedback.dart';
@@ -7,6 +12,17 @@ import 'package:recruit_app/pages/mine/push_set.dart';
 import 'package:recruit_app/pages/mine/send_resume.dart';
 import 'package:recruit_app/pages/msg/agreement.dart';
 import 'package:recruit_app/pages/share_helper.dart';
+import 'package:recruit_app/pages/utils/com_save.dart';
+import 'package:recruit_app/pages/utils/jz_no.dart';
+import 'package:recruit_app/pages/utils/jz_save.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../constant.dart';
+import '../event_heper.dart';
+import '../event_heper.dart';
+import '../share_helper.dart';
+import '../share_helper.dart';
+import '../storage_manager.dart';
+import '../utils/gaps.dart';
 import 'comunicate.dart';
 import 'mine_infor.dart';
 import 'mine_jl.dart';
@@ -21,20 +37,143 @@ class MeJz extends StatefulWidget {
 
 class _MeJzState extends State<MeJz> {
   List<Me> options = List();
+  final TapGestureRecognizer recognizer = TapGestureRecognizer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+  print(ShareHelper.getUser().nick_name);
+
+  setState(() {
+    try{
+      String jsonStr = StorageManager.sharedPreferences.getString(ShareHelper.getUser().id+"bm");
+      List data =  json.decode(jsonStr);
+      num = data.length;
+    }catch(e){
+      num = 0;
+    }
+
+  });
+
+
 
     options.add( Me(imgPath: 'images/me1.png', itemName: '推送设置', itemStatus: ''));
     options.add( Me(imgPath: 'images/me2.png', itemName: '意见反馈', itemStatus: ''));
     options.add( Me(imgPath: 'images/me3.png', itemName: '好评一下', itemStatus: ''));
     options.add( Me(imgPath: 'images/me4.png', itemName: '隐私与协议', itemStatus: ''));
     options.add( Me(imgPath: 'images/me5.png', itemName: '设置', itemStatus: ''));
+    _eventSub();
+//    name ="";
+//    xl ="";
+//    imagUrl ="";
+     name = ShareHelper.isLogin() ?ShareHelper.getUser().nick_name : "未登录";
+     xl = ShareHelper.isLogin() ?ShareHelper.getUser().education : "点击登录";
+    imagUrl = ShareHelper.isLogin() ?ShareHelper.getUser().head_img : "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1093847288,3038136586&fm=26&gp=0.jpg";
+    recognizer.onTap = () {
+      launch("tel:${Constant.kf_phone}");
 
+    };
 
   }
+  String name;
+  String xl;
+  String imagUrl;
+  StreamSubscription  _eventRefreshSub;
+  int num;
+  void _eventSub(){
 
+    _eventRefreshSub= eventBus.on<LoginEvent>().listen((event) {
+      setState(() {
+        name = ShareHelper.isLogin() ?ShareHelper.getUser().nick_name : "未登录";
+        xl = ShareHelper.isLogin() ?ShareHelper.getUser().education : "点击登录";
+        imagUrl = ShareHelper.isLogin() ?ShareHelper.getUser().head_img : "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1093847288,3038136586&fm=26&gp=0.jpg";
+
+      });
+    });
+  }
+  void _showCall(){
+    showModalBottomSheet(
+
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 200,
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                height: 118,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12)
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Gaps.vGap20,
+                    Text("客服热线服务时间:9:00-21:00",
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colours.gray_8A8F8A
+                      ),
+
+                    ),
+                    Gaps.vGap20,
+                    Gaps.line1,
+                    Gaps.vGap20,
+                    Text.rich(TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "客户服务热线：",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colours.black_212920
+                            ),
+                          ),
+                          TextSpan(
+                            recognizer: recognizer,
+                            text: Constant.kf_phone,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colours.app_main
+                            ),
+                          ),
+                        ]
+                    ))
+                  ],
+                ),
+              ),
+              GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () =>Navigator.of(context).pop(),
+                  child: Container(
+                      margin: EdgeInsets.all(10),
+                      height:54,
+                      alignment: Alignment.center,
+                      width: double.infinity,
+
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12)
+                      ),
+                      child: Text("取消",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colours.app_main,
+                            fontWeight: FontWeight.bold
+                        ),
+                      )
+                  )
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +184,13 @@ class _MeJzState extends State<MeJz> {
         actions: <Widget>[
           IconButton(
               icon: Image.asset(
-                'images/img_setting_white.png',
+                'images/kf.png',
                 width: 24,
                 height: 24,
               ),
               onPressed: () {
-//                Navigator.push(context, MaterialPageRoute(builder: (context)=>Setting(), ),);
+//
+                _showCall();
               }),
         ],
         backgroundColor: Colours.app_main,
@@ -96,19 +236,19 @@ class _MeJzState extends State<MeJz> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children:<Widget>[
                                       Text(
-                                        '哈哈哈哈哈登',
+                                        name,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: ScreenUtil().setSp(40),
+                                            fontSize: ScreenUtil().setSp(48),
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(
-                                        height: ScreenUtil().setWidth(20),
+                                        height: ScreenUtil().setWidth(30),
                                       ),
                                       Text(
-                                        '点击登录',
+                                        xl,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -128,8 +268,8 @@ class _MeJzState extends State<MeJz> {
                                   borderRadius: BorderRadius.circular(
                                     ScreenUtil().setWidth(70),
                                   ),
-                                  child: Image.asset(
-                                    'images/img_icon_harden.png',
+                                  child: Image.network(
+                                   imagUrl,
                                     width: ScreenUtil().setWidth(140),
                                     height: ScreenUtil().setWidth(140),
                                     fit: BoxFit.cover,
@@ -152,7 +292,7 @@ class _MeJzState extends State<MeJz> {
                                   child: Column(
                                     children: <Widget>[
                                       Text(
-                                        '18',
+                                        num.toString(),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -163,7 +303,7 @@ class _MeJzState extends State<MeJz> {
                                       ),
                                       SizedBox(height: 10),
                                       Text(
-                                        '已投递',
+                                        '已报名',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -175,7 +315,12 @@ class _MeJzState extends State<MeJz> {
                                     ],
                                   ),
                                   onTap: () {
-                                    Navigator.push(context,MaterialPageRoute(builder: (context)=>SendResumeJob(),),);
+                                    if(ShareHelper.isLogin()){
+                                      Navigator.push(context,MaterialPageRoute(builder: (context)=>JZSave("已报名"),),);
+                                    }else{
+                                      Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPdPage(),),);
+                                    }
+
 
                                   },
                                 ),
@@ -196,7 +341,7 @@ class _MeJzState extends State<MeJz> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
-                                        '18',
+                                        '0',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -207,7 +352,7 @@ class _MeJzState extends State<MeJz> {
                                       ),
                                       SizedBox(height: 10),
                                       Text(
-                                        '待面试',
+                                        '已录取',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -217,7 +362,13 @@ class _MeJzState extends State<MeJz> {
                                       ),
                                     ],
                                   ),
-                                  onTap: () {},
+                                  onTap: () {
+                                    if(ShareHelper.isLogin()){
+                                      Navigator.push(context,MaterialPageRoute(builder: (context)=>JZNo("已录取"),),);
+                                    }else{
+                                      Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPdPage(),),);
+                                    }
+                                  },
                                 ),
                               ),
                               Container(
@@ -236,7 +387,7 @@ class _MeJzState extends State<MeJz> {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                        '18',
+                                        '0',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -247,7 +398,7 @@ class _MeJzState extends State<MeJz> {
                                       ),
                                       SizedBox(height: 10),
                                       Text(
-                                        '沟通过',
+                                        '已拒绝',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -258,7 +409,11 @@ class _MeJzState extends State<MeJz> {
                                     ],
                                   ),
                                   onTap: () {
-                                    Navigator.push(context,MaterialPageRoute(builder: (context)=>ComunicateJob(),),);
+                                    if(ShareHelper.isLogin()){
+                                      Navigator.push(context,MaterialPageRoute(builder: (context)=>JZNo("已拒绝"),),);
+                                    }else{
+                                      Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPdPage(),),);
+                                    }
                                   },
                                 ),
                               ),
@@ -274,7 +429,11 @@ class _MeJzState extends State<MeJz> {
                       child: GestureDetector(
 
                         onTap: (){
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>MineJL(),),);
+                          if(ShareHelper.isLogin()){
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>MineJL(),),);
+                          }else{
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPdPage(),),);
+                          }
                     },
                       child:Card(
                         elevation: 0.2,
@@ -338,69 +497,89 @@ class _MeJzState extends State<MeJz> {
               children: <Widget>[
                 Expanded(
                   flex: 1,
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(width: 16,),
-                      Image.asset("images/love.png",height: 40,width: 40),
-                      SizedBox(width: 16,),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "兼职收藏",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                  child:GestureDetector(
+                    onTap: (){
+                      if(ShareHelper.isLogin()){
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=>JZSave("兼职收藏"),),);
+                      }else{
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPdPage(),),);
+                      }
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(width: 16,),
+                        Image.asset("images/love.png",height: 40,width: 40),
+                        SizedBox(width: 16,),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "兼职收藏",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
 
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 7,
-                          ),
-                          Text(
+                            SizedBox(
+                              height: 7,
+                            ),
+                            Text(
                               "你感兴趣的兼职",style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w100
-                          ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+                                color: Colors.grey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w100
+                            ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
                 ),
                 Expanded(
                   flex: 1,
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(width: 16,),
-                      Image.asset("images/sub.png",height: 40,width: 40),
-                      SizedBox(width: 16,),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "公司关注",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                  child: GestureDetector(
+                    onTap: (){
+                      if(ShareHelper.isLogin()){
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=>ComSave("公司关注"),),);
+                      }else{
+                        Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPdPage(),),);
+                      }
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Row(
+                      children: <Widget>[
+                        SizedBox(width: 16,),
+                        Image.asset("images/sub.png",height: 40,width: 40),
+                        SizedBox(width: 16,),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "公司关注",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
 
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 7,
-                          ),
-                          Text(
-                            "公司职位不遗漏",style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 11,
-                              fontWeight: FontWeight.w100
-                          ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                            SizedBox(
+                              height: 7,
+                            ),
+                            Text(
+                              "公司职位不遗漏",style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w100
+                            ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
                 )
               ],
             ),
@@ -479,7 +658,7 @@ class _MeJzState extends State<MeJz> {
                                   MaterialPageRoute(
                                       builder: (context) => FeedbackPage()));
                             } else if (index == 2) {
-
+                              LaunchReview.launch(androidAppId: "com.shuibian.jobwork");
                             }else if(index == 3){
                               Navigator.push(
                                   context,

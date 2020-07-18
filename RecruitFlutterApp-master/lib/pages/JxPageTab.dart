@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recruit_app/colours.dart';
+import 'package:recruit_app/pages/jz_titl.dart';
 import 'package:recruit_app/pages/jzjxpage.dart';
 
 class JXPageTab extends StatefulWidget {
@@ -11,7 +12,7 @@ class _JXPageTabState extends State<JXPageTab> {
 
   List<String> images =["images/zt_a1.png","images/zt_a2.png","images/zt_a3.png","images/zt_a4.png","images/zt_a5.png"];
   List<String> imageZs =["images/zt1.jpg","images/zt2.png","images/zt3.png","images/zt4.jpg"];
-  List<String> txt=["周末兼职","模特T台","主播聊天","家教辅导","抖音视频"];
+  List<String> txt=["周末兼职","模特T台","主播聊天","学生校园","抖音视频"];
   List<String> txtS=["校内兼职推荐","线上兼职专场","兼职赚钱攻略","潮兼职，等你来"];
   List<String> txDesc=["校内兼职每周更新，专为学生打造的专栏","线上兼职聚集地，在家也能完成的兼职工作","小编精选，快速兼职赚钱新套路","潮兼职，新潮流，不一样的奇妙兼职工作"];
 
@@ -58,18 +59,47 @@ class _JXPageTabState extends State<JXPageTab> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   //如果显示到最后一个并且Icon总数小于200时继续获取数据
-                  return Column(
-                    children: [
-                      Image.asset(images[index],width: 40,height: 40,),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        txt[index],
+                  return  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: (){
+                      String surl;
+                      switch(index){
+                        case 0:
+                           surl ="http://www.zaojiong.com/job/?c=search&keyword=%E5%91%A8%E6%9C%AB&minsalary=&maxsalary=";
+                          break;
+                        case 1:
+                          surl ="http://www.zaojiong.com/job/?c=search&keyword=%E6%A8%A1%E7%89%B9&minsalary=&maxsalary=";
+                          break;
+                        case 2:
+                          surl ="http://www.zaojiong.com/job/?c=search&keyword=%E4%B8%BB%E6%92%AD&minsalary=&maxsalary=";
+                          break;
 
-                      ),
+                        case 3:
+                          surl ="http://www.zaojiong.com/job/?c=search&keyword=%E5%AD%A6%E7%94%9F&minsalary=&maxsalary=";
+                          break;
 
-                    ],
+                        case 4:
+                          surl ="http://www.zaojiong.com/job/?c=search&keyword=%E6%8A%96%E9%9F%B3&minsalary=&maxsalary=";
+                          break;
+                      }
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => JzTitl(  txt[index],surl)));
+                    },
+                    child:Column(
+                      children: [
+                        Image.asset(images[index],width: 40,height: 40,),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          txt[index],
+
+                        ),
+
+                      ],
+                    ),
                   );
                 }
             ),

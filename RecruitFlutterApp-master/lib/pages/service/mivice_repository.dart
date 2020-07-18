@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:recruit_app/pages/share_helper.dart';
 
+import '../share_helper.dart';
+
 class MiviceRepository{
 
 //  static String baseUrl = 'http://116.62.45.24/crawler/';      //开发
@@ -114,7 +116,14 @@ class MiviceRepository{
     });
     return response;
   }
+  Future forgetPd(String phone,String pwd) async {
+    var response = await dio.post<Map>('/user/forgetPassword',data: {
 
+      'phone': phone,
+      'new_password': pwd,
+    });
+    return response;
+  }
   Future upDateInfo(String key,String info) async {
     var response = await dio.post<Map>('/user/edit',data: {
        "id":ShareHelper.getUser().id,
@@ -185,4 +194,12 @@ class MiviceRepository{
     return response;
   }
 
+  Future deletAuthor()async{
+    var response = await dio.post<Map>('/user/del', data: {
+
+      'id': ShareHelper.getUser().id,
+
+    });
+    return response;
+  }
 }

@@ -64,7 +64,7 @@ class _ForgetState extends State<RegPage>{
 
 
         User user = User.fromJson(data);
-          StorageManager.localStorage.setItem(ShareHelper.kUser, user);
+          StorageManager.localStorage.setItem(ShareHelper.kUser, user.toJson());
           StorageManager.sharedPreferences.setBool(ShareHelper.is_Login, true);
           eventBus.fire(new LoginEvent());
          Navigator.of(context).pop(true);

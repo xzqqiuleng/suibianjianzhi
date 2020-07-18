@@ -181,7 +181,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
           SaveDatas["label"] = infors["label"];
           SaveDatas["address"] = infors["address"];
           SaveDatas["job_num"] = infors["job_num"];
-
+          SaveDatas["jobHref"] = widget.url;
 
         });
 
@@ -749,9 +749,9 @@ class _CompanyDetailState extends State<CompanyDetail> {
                       return;
                     }
                     if(isSvae){
-                      ShareHelper.deletData(widget.url,"work");
+                      ShareHelper.deletData(widget.url,"company");
                     }else{
-                      ShareHelper.saveData(SaveDatas,"work");
+                      ShareHelper.saveData(SaveDatas,"company");
 
                     }
                     setState(() {

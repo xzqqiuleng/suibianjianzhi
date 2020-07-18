@@ -37,10 +37,15 @@ class _BmResultState extends State<BmResult> {
       }
     });
   }
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadData();
+  }
   @override
   Widget build(BuildContext context) {
-    _loadData();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

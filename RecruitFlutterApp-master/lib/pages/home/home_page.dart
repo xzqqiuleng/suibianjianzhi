@@ -90,7 +90,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         List bannStr1 = List();
         List bannStr2 = List();
         List bannStr3 = List();
+
         for (var itme in data) {
+
           if (itme["level"].toString() == "one") {
             bannStr1.add(itme);
           } else if (itme["level"].toString() == "two") {
@@ -100,13 +102,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           }
         }
         if(bannStr1.length>0){
-          ShareHelper.saveBanner(bannStr1, "one");
+          topBannerDatas.clear();
+          for(var inten in bannStr1){
+            BannerModel bannerModel = BannerModel(imageUrl: inten["img_url"],link: inten["link_url"],type: inten["go_type"]);
+            this.topBannerDatas.add(bannerModel);
+          }
+          setState(() {
+
+          });
         }
         if(bannStr2.length>0){
-          ShareHelper.saveBanner(bannStr1, "two");
+          ShareHelper.saveBanner(bannStr2, "two");
         }
         if(bannStr3.length>0){
-          ShareHelper.saveBanner(bannStr1, "three");
+          ShareHelper.saveBanner(bannStr3, "three");
         }
       }
     });

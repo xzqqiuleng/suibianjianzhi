@@ -8,6 +8,13 @@ import 'package:recruit_app/pages/utils/cashfile_utils.dart';
 import 'package:recruit_app/widgets/common_appbar_widget.dart';
 import 'package:recruit_app/widgets/progress_dialog.dart';
 
+import '../event_heper.dart';
+import '../event_heper.dart';
+import '../service/mivice_repository.dart';
+import '../share_helper.dart';
+import '../share_helper.dart';
+import '../storage_manager.dart';
+
 class NewSetting extends StatefulWidget {
   @override
   _NewSettingState createState() => _NewSettingState();
@@ -53,14 +60,14 @@ class _NewSettingState extends State<NewSetting> {
           CupertinoDialogAction(
             child:  Text("删除",style: TextStyle(color: Colours.app_main,fontSize: 17,fontWeight: FontWeight.bold)),
             onPressed: (){
-//              if(UserHelper.isLogin()){
-//                MiviceRepository().deleteAccount().then((value) {
-//                  UserModel usermodel = Provider.of<UserModel>(buildContext,listen: false);
-//                  usermodel.logout();
-//                  Navigator.of(context).pop();
-//                  eventBus.fire(HomeRefreshEvent(true));
-//                });
-//              }
+              if(ShareHelper.isLogin()){
+                MiviceRepository().deletAuthor().then((value) {
+                  StorageManager.localStorage.deleteItem(ShareHelper.kUser);
+                  StorageManager.sharedPreferences.setBool(ShareHelper.is_Login, false);
+                  eventBus.fire(LoginEvent());
+                  Navigator.of(context).pop();
+                });
+              }
 
             },
           ),

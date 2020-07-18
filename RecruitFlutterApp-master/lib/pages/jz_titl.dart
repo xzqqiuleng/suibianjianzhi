@@ -8,9 +8,10 @@ import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'jobs/job_detail.dart';
 import 'jobs/job_row_item.dart';
 
-class JZTitlePage extends StatefulWidget{
+class JzTitl extends StatefulWidget{
       String title;
- JZTitlePage(this.title);
+      String url;
+ JzTitl(this.title,this.url);
 
   @override
   _JZState createState() {
@@ -20,22 +21,16 @@ class JZTitlePage extends StatefulWidget{
 
 }
 
-class _JZState extends State<JZTitlePage>{
+class _JZState extends State<JzTitl>{
   RefreshController _refreshController =
   RefreshController(initialRefresh: true);
 
   List data =List();
- String url;
- int page;
-  _OnRefresh(){
-    page = 1;
-    if(widget.title == "网上兼职"){
-      url = "http://www.zaojiong.com/job/list/985-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
-    }else{
-      url = "http://www.zaojiong.com/job/list/45-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
-    }
 
-    new MiviceRepository().getJzList(url).then((value) {
+  _OnRefresh(){
+
+
+    new MiviceRepository().getJzList(widget.url).then((value) {
       var reponse = json.decode(value.toString());
       if(reponse["status"] == "success"){
         data.clear();
@@ -43,32 +38,13 @@ class _JZState extends State<JZTitlePage>{
         setState(() {
           data = reponse["result"];
         });
-        page++;
         print(data);
       }
       _refreshController.refreshCompleted();
     });
   }
   _loadMore(){
-    if(widget.title == "网上兼职"){
-      url = "http://www.zaojiong.com/job/list/985-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
-    }else{
-      url = "http://www.zaojiong.com/job/list/45-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
-    }
-
-    new MiviceRepository().getJzList(url).then((value) {
-      var reponse = json.decode(value.toString());
-      if(reponse["status"] == "success"){
-        List  loaddata = reponse["result"];
-        setState(() {
-          data.addAll(loaddata);
-        });
-
-        page++;
-
-      }
-      _refreshController.loadComplete();
-    });
+    _refreshController.loadComplete();
 
   }
   @override
@@ -108,17 +84,7 @@ class _JZState extends State<JZTitlePage>{
           onRefresh: _OnRefresh,
           onLoading: _loadMore,
           enablePullUp: true,
-          child: data.length == 0 ? Center(
-      child:  Column(
-      mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset("images/empty_work.png",width: 60,height: 60,),
-          Text(
-              "暂未搜到相关数据"
-          )
-        ],
-      )
-    ):ListView.builder(itemBuilder: (context, index) {
+          child: ListView.builder(itemBuilder: (context, index) {
             if (data.length >0 && index < data.length) {
               return GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -130,7 +96,7 @@ class _JZState extends State<JZTitlePage>{
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>JobDetail(0,url: data[index]["jobHref"]),
+                          builder: (context) =>JobDetail(0,url:data[index]["jobHref"]),
                         ));
                   });
             }

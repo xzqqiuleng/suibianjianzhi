@@ -8,6 +8,9 @@ import 'package:recruit_app/pages/share_helper.dart';
 import 'package:recruit_app/pages/storage_manager.dart';
 import 'package:recruit_app/widgets/log_reg_textfield.dart';
 
+import '../event_heper.dart';
+import '../event_heper.dart';
+
 class MeDesc extends StatefulWidget {
   int type; //0, 1，公司名称 2，工作职位 3.工作内容
   MeDesc(this.type);
@@ -41,10 +44,20 @@ class _MeDescState extends State<MeDesc> {
             case 1:
               user.wxId = _phoneController.text;
               break;
+            case 2:
+              user.desc = _phoneController.text;
+              break;
+            case 3:
+              user.school = _phoneController.text;
+              break;
+            case 4:
+              user.work = _phoneController.text;
+              break;
         }
           StorageManager.localStorage.setItem(ShareHelper.kUser, user);
 
           Navigator.of(context).pop(_phoneController.text);
+          eventBus.fire(LoginEvent());
         }else{
           showToast(reponse["msg"]);
         }
@@ -72,28 +85,22 @@ class _MeDescState extends State<MeDesc> {
       case 2:
         title = "自我介绍";
         hint = "请用简单的自我介绍，展示你的优势";
-        line = 1;
+        line = 10;
+        mkey = "desc";
         break;
       case 3:
-        title = "自我介绍";
-        hint = "请用简单的自我介绍，展示你的优势";
+        title = "最高院校";
+        hint = "你的毕业院校/或在读院校";
         line = 1;
+        mkey = "school";
         break;
       case 4:
-        title = "自我介绍";
-        hint = "请用简单的自我介绍，展示你的优势";
-        line = 1;
+        title = "工作经历";
+        hint = "最近一次的工作经历描述";
+        line = 10;
+        mkey = "work";
         break;
-      case 5:
-        title = "自我介绍";
-        hint = "请用简单的自我介绍，展示你的优势";
-        line = 1;
-        break;
-      case 6:
-        title = "自我介绍";
-        hint = "请用简单的自我介绍，展示你的优势";
-        line = 1;
-        break;
+
 
     }
   }
@@ -111,7 +118,7 @@ class _MeDescState extends State<MeDesc> {
 
         elevation: 0,
         centerTitle: true,
-        title: Text("自我介绍",
+        title: Text(title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
@@ -145,7 +152,7 @@ class _MeDescState extends State<MeDesc> {
         margin: EdgeInsets.all(20),
         child: LogRegTextField(
 
-          label: "请用简单的自我介绍，展示你的优势",
+          label: hint,
           controller:  _phoneController,
           textInputAction: TextInputAction.next,
           textInputType: TextInputType.phone,

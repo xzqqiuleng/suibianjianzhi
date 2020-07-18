@@ -40,8 +40,8 @@ class _ForgetState extends State<ForgetPage>{
        showToast("两次密码输入不一致");
     }else {
 
-      MiviceRepository().registerPd(_phoneController.text, _newPdController.text).then((value) {
-
+      MiviceRepository().forgetPd(_phoneController.text, _newPdController.text).then((value) {
+          Navigator.of(context).pop();
       });
     }
 
