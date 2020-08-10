@@ -75,14 +75,14 @@ class _JXPageTabState extends State<JXPageTab> {
                 }
                 if(RandomItem["go_type"].toString() == "app"){
                   if(RandomItem["link_url"].toString().length < 3){
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/34.html")));
                   }else{
                     downloadUrlApp(context,RandomItem[" link_url"].toString());
                   }
 
                 }else{
                   if(RandomItem["link_url"].toString().length < 3){
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/34.html")));
                   }else{
                     Navigator.push(context,MaterialPageRoute(builder: (context)=>WebPage(RandomItem[" link_url"].toString())));
                   }
@@ -135,7 +135,7 @@ class _JXPageTabState extends State<JXPageTab> {
                           break;
 
                         case 4:
-                          surl ="http://www.zaojiong.com/job/?c=search&keyword=%E6%8A%96%E9%9F%B3&minsalary=&maxsalary=";
+                          surl ="http://www.zaojiong.com/job/?c=search&keyword=%E5%A8%B1%E4%B9%90%E4%B8%BB%E6%92%AD&minsalary=&maxsalary=";
                           break;
                       }
                       Navigator.push(

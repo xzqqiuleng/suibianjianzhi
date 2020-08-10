@@ -453,7 +453,7 @@ class _JobDetailState extends State<JobDetail> {
                         height: 2,
                         margin: EdgeInsets.only(top: 15, bottom: 20),
                       ),
-                  Html(data: jobDes.toString()),
+                  Html(data: jobDes.toString().replaceAll("早炯", "")),
 
                       Container(
                         color: Color.fromRGBO(242, 242, 242, 1),

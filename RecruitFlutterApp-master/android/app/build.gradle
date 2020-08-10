@@ -27,7 +27,18 @@ apply plugin: 'com.mob.sdk'
 MobSDK {
     appKey "301d2b3fea600"
     appSecret "77321f7ccc05e1917ff1068eb7c3cb87"
-
+    devInfo {
+        id 4
+        sortId 4
+        appId "wxac52ca781b2f043b"
+        appSecret "6a37ab68560433ebd4d01ee7a1c47d17"
+        userName "mivice"
+        path "pages/index/index.html?id=1"
+        withShareTicket true
+        miniprogramType 0
+        bypassApproval false
+        enable true
+    }
 }
 android {
     compileSdkVersion 28
@@ -45,8 +56,8 @@ android {
         applicationId "com.suibian.jobwork"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 3
+        versionName "3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -57,10 +68,16 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
 }
 
 flutter {
     source '../..'
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -69,4 +86,5 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     provided rootProject.findProject(":mobsms")
+    implementation(name: 'GDTActionSDK.min.1.6.8', ext: 'aar')
 }

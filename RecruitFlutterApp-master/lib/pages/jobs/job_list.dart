@@ -136,7 +136,12 @@ class _JobBodyListState extends State<JobBodyList> with AutomaticKeepAliveClient
 void initState() {
   // TODO: implement initState
   super.initState();
-  url = "http://www.zaojiong.com/job/list/0-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
+  if(widget.type == 0){
+    url = "http://www.zaojiong.com/job/list/0-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
+  }else{
+    url = "http://www.zaojiong.com/job/list/45-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
+  }
+
   _eventSub();
 }
   void _eventSub(){

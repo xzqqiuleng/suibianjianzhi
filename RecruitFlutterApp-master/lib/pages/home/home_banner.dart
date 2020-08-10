@@ -30,14 +30,14 @@ class HomeBanner extends StatelessWidget {
             onTap: (){
                 if(model.type.toString() == "app"){
                   if(model.link.length < 3){
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/34.html")));
                   }else{
                     downloadUrlApp(context,model.link);
                   }
 
                 }else{
                   if(model.link.length < 3){
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/224.html")));
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/34.html")));
                   }else{
                     Navigator.push(context,MaterialPageRoute(builder: (context)=>WebPage(model.link)));
                   }

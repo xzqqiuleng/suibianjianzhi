@@ -116,6 +116,7 @@ class _CompanyDetailState extends State<CompanyDetail> {
           ),
         ),
         Container(
+
           height: 190,
           padding: EdgeInsets.only(top: 6),
           color: Colors.white,
