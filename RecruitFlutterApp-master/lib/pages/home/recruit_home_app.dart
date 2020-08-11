@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:imei_plugin/imei_plugin.dart';
 import 'package:provider/provider.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/model/identity_model.dart';
@@ -17,6 +18,7 @@ import 'package:recruit_app/pages/mine/me_jz.dart';
 import 'package:recruit_app/pages/msg/agreement_detail.dart';
 import 'package:recruit_app/pages/msg/msg_list.dart';
 import 'package:recruit_app/pages/msg/new_msglist.dart';
+import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/storage_manager.dart';
 
 class RecruitHomeApp extends StatefulWidget {
@@ -273,7 +275,22 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
       }
 
     });
+    initPlatformState();
   }
+  Future<void> initPlatformState() async {
+    String platformImei;
+
+    try {
+      platformImei =
+      await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+
+            MiviceRepository().postTencentData("START_APP", platformImei);
+    } on PlatformException {
+      platformImei = 'Failed to get platform version.';
+    }
+
+  }
+
   void _showProtocolDialog(BuildContext context) async{
 
     await showDialog(context: context,barrierDismissible:false,builder: (BuildContext context){

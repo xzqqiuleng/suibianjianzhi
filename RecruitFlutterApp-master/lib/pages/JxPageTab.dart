@@ -3,11 +3,14 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:imei_plugin/imei_plugin.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/jobs/job_detail.dart';
 import 'package:recruit_app/pages/jz_titl.dart';
 import 'package:recruit_app/pages/jzjxpage.dart';
 import 'package:recruit_app/pages/provider/app_update.dart';
+import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/storage_manager.dart';
 import 'package:recruit_app/pages/web_detail.dart';
 
@@ -46,7 +49,26 @@ class _JXPageTabState extends State<JXPageTab> {
 
 
   }
+  Future<void> initPlatformState() async {
+    String platformImei;
 
+    try {
+      platformImei =
+      await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+
+      MiviceRepository().postTencentData("PAGE_VIEW", platformImei);
+    } on PlatformException {
+      platformImei = 'Failed to get platform version.';
+    }
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initPlatformState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

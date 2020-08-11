@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:imei_plugin/imei_plugin.dart';
 import 'package:recruit_app/model/banner_model.dart';
 import 'package:recruit_app/model/topictab_model.dart';
 import 'package:recruit_app/pages/city_page.dart';
@@ -120,11 +122,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       }
     });
   }
+  Future<void> initPlatformState() async {
+    String platformImei;
 
+    try {
+      platformImei =
+      await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+
+      MiviceRepository().postTencentData("PAGE_VIEW", platformImei);
+    } on PlatformException {
+      platformImei = 'Failed to get platform version.';
+    }
+
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    initPlatformState();
     getBanner();
     _city = ShareHelper.getCity() == ""?"全部":ShareHelper.getCity();
     _mainScrollable =true;

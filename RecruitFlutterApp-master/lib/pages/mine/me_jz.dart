@@ -3,7 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:imei_plugin/imei_plugin.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/account/register/login_pd_page.dart';
@@ -11,6 +13,7 @@ import 'package:recruit_app/pages/mine/feedback.dart';
 import 'package:recruit_app/pages/mine/push_set.dart';
 import 'package:recruit_app/pages/mine/send_resume.dart';
 import 'package:recruit_app/pages/msg/agreement.dart';
+import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/share_helper.dart';
 import 'package:recruit_app/pages/utils/com_save.dart';
 import 'package:recruit_app/pages/utils/jz_no.dart';
@@ -38,11 +41,29 @@ class MeJz extends StatefulWidget {
 class _MeJzState extends State<MeJz> {
   List<Me> options = List();
   final TapGestureRecognizer recognizer = TapGestureRecognizer();
+
+
+
+  Future<void> initPlatformState() async {
+    String platformImei;
+
+    try {
+      platformImei =
+      await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+
+      MiviceRepository().postTencentData("PAGE_VIEW", platformImei);
+    } on PlatformException {
+      platformImei = 'Failed to get platform version.';
+    }
+
+  }
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    initPlatformState();
   setState(() {
     try{
       String jsonStr = StorageManager.sharedPreferences.getString(ShareHelper.getUser().id+"bm");
