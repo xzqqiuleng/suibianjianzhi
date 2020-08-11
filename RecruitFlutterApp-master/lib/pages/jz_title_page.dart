@@ -28,7 +28,7 @@ class _JZState extends State<JZTitlePage>{
  String url;
  int page;
   _OnRefresh(){
-    page = 1;
+    page = 2;
     if(widget.title == "网上兼职"){
       url = "http://www.zaojiong.com/job/list/985-0-0-0_0_0_0_0_0_0_0-0-0-0-${page}.html";
     }else{

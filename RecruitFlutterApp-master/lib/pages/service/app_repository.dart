@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:recruit_app/pages/constant.dart';
 import 'package:recruit_app/pages/provider/update_info.dart';
 /// App相关接口
 class AppRepository {

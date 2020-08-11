@@ -50,15 +50,14 @@ class _JXPageTabState extends State<JXPageTab> {
 
   }
   Future<void> initPlatformState() async {
-    String platformImei;
+
 
     try {
-      platformImei =
-      await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+      String uuid = await ImeiPlugin.getId();
 
-      MiviceRepository().postTencentData("PAGE_VIEW", platformImei);
+      MiviceRepository().postTencentData("PAGE_VIEW", uuid);
     } on PlatformException {
-      platformImei = 'Failed to get platform version.';
+
     }
 
   }

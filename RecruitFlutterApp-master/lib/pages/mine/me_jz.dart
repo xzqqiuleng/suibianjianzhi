@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +10,6 @@ import 'package:recruit_app/colours.dart';
 import 'package:recruit_app/pages/account/register/login_pd_page.dart';
 import 'package:recruit_app/pages/mine/feedback.dart';
 import 'package:recruit_app/pages/mine/push_set.dart';
-import 'package:recruit_app/pages/mine/send_resume.dart';
 import 'package:recruit_app/pages/msg/agreement.dart';
 import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/share_helper.dart';
@@ -21,12 +19,9 @@ import 'package:recruit_app/pages/utils/jz_save.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constant.dart';
 import '../event_heper.dart';
-import '../event_heper.dart';
-import '../share_helper.dart';
 import '../share_helper.dart';
 import '../storage_manager.dart';
 import '../utils/gaps.dart';
-import 'comunicate.dart';
 import 'mine_infor.dart';
 import 'mine_jl.dart';
 import 'package:recruit_app/model/me_list.dart';
@@ -45,15 +40,13 @@ class _MeJzState extends State<MeJz> {
 
 
   Future<void> initPlatformState() async {
-    String platformImei;
 
     try {
-      platformImei =
-      await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+      String uuid = await ImeiPlugin.getId();
 
-      MiviceRepository().postTencentData("PAGE_VIEW", platformImei);
+      MiviceRepository().postTencentData("PAGE_VIEW", uuid);
     } on PlatformException {
-      platformImei = 'Failed to get platform version.';
+
     }
 
   }

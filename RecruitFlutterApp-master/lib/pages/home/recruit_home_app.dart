@@ -278,15 +278,14 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
     initPlatformState();
   }
   Future<void> initPlatformState() async {
-    String platformImei;
+
 
     try {
-      platformImei =
-      await ImeiPlugin.getImei(shouldShowRequestPermissionRationale: false);
+      String uuid = await ImeiPlugin.getId();
 
-            MiviceRepository().postTencentData("START_APP", platformImei);
+            MiviceRepository().postTencentData("START_APP", uuid);
     } on PlatformException {
-      platformImei = 'Failed to get platform version.';
+
     }
 
   }

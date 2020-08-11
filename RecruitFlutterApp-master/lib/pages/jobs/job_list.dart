@@ -168,7 +168,7 @@ void initState() {
   }
   _OnRefresh(){
 
-    page=1;
+    page=2;
     url = "http://www.zaojiong.com/job/list/0-${cityNum}-${saNum}-0_${jlNum}_0_0_0_0_0_0-0-0-0-${page}.html";
     new MiviceRepository().getJzList(url).then((value) {
       var reponse = json.decode(value.toString());
