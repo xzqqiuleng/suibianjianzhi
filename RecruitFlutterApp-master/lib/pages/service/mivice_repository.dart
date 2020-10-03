@@ -8,7 +8,7 @@ class MiviceRepository{
 //  static String baseUrl = 'http://116.62.45.24/crawler/';      //开发
 
 //  static String baseUrl = 'http://192.168.1.16:8080/';      //开发
-  static String baseUrl = 'http://62.60.174.78/partApi/';      //开发
+  static String baseUrl = 'http://103.59.166.40/partApi/';      //开发
   static String socketUrl = 'ws://192.168.1.14:8080/ws/msg?';      //开发
 
   static Dio dio;
@@ -190,7 +190,7 @@ class MiviceRepository{
     FormData formData = FormData.fromMap({
       "file": image
     });
-    var response = await Dio().post('http://62.60.174.78:8088/upload', data: formData);
+    var response = await Dio().post('http://103.59.166.40/upApi/upload', data: formData);
     return response;
   }
 
