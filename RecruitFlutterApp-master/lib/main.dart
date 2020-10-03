@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:recruit_app/model/identity_model.dart';
@@ -18,6 +19,14 @@ void main() async {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(statusBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
+
+  JPush jpush = new JPush();
+  jpush.setup(
+    appKey: "c617b6aa7cd0d4a17f48e2aa",
+    channel: "theChannel",
+    production: false,
+    debug: false, // 设置是否打印 debug 日志
+  );
 }
 
 class MyApp extends StatelessWidget {

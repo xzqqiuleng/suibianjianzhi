@@ -13,9 +13,9 @@ class AgreementDetailPage extends StatelessWidget{
 
     List _items=["用户服务协议","用户隐私政策"];
      if(type == 0){
-       htmlUrl = "http://62.60.174.78/protocol/agreement.html";
+       htmlUrl = "http://103.59.166.40/html/protocol/agreement.html";
      }else{
-       htmlUrl = "http://62.60.174.78/protocol/private.html";
+       htmlUrl = "http://103.59.166.40/html/protocol/private.html";
 
      }
     // TODO: implement build
