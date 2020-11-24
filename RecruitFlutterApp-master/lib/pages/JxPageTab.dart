@@ -105,7 +105,7 @@ class _JXPageTabState extends State<JXPageTab> {
                   if(RandomItem["link_url"].toString().length < 3){
                     Navigator.push(context,MaterialPageRoute(builder: (context)=>JobDetail(0,url:"http://www.zaojiong.com/job/34.html")));
                   }else{
-                    Navigator.push(context,MaterialPageRoute(builder: (context)=>WebPage(RandomItem[" link_url"].toString())));
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>WebPage(RandomItem["link_url"].toString())));
                   }
 
                 }

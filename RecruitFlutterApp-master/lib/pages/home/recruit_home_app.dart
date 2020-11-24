@@ -15,9 +15,12 @@ import 'package:recruit_app/pages/home/home_page.dart';
 import 'package:recruit_app/pages/jobs/job_list.dart';
 import 'package:recruit_app/pages/mine/me.dart';
 import 'package:recruit_app/pages/mine/me_jz.dart';
+import 'package:recruit_app/pages/mj/mj_constant.dart';
+import 'package:recruit_app/pages/mj/mj_web.dart';
 import 'package:recruit_app/pages/msg/agreement_detail.dart';
 import 'package:recruit_app/pages/msg/msg_list.dart';
 import 'package:recruit_app/pages/msg/new_msglist.dart';
+import 'package:recruit_app/pages/provider/app_update.dart';
 import 'package:recruit_app/pages/service/mivice_repository.dart';
 import 'package:recruit_app/pages/storage_manager.dart';
 
@@ -269,6 +272,10 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
 
       if(StorageManager.sharedPreferences != null &&StorageManager.sharedPreferences.getBool("is_sagree") !=null &&StorageManager.sharedPreferences.getBool("is_sagree")){
 
+       if(MjConstant.ad_img_url != ""&& MjConstant.ad_url != "" && MjConstant.ad_go_type != ""){
+         _showAdDialog(context);
+       }
+
 
       }else{
         _showProtocolDialog(context);
@@ -289,7 +296,31 @@ class _RecruitHomeState extends State<RecruitHomeApp> {
     }
 
   }
+  void _showAdDialog(BuildContext context) async{
 
+    await showDialog(context: context,barrierDismissible:true,builder: (BuildContext context){
+
+      return CupertinoAlertDialog(
+        content:GestureDetector(
+          child: Image.network(MjConstant.ad_img_url,fit: BoxFit.fill,),
+          onTap: (){
+            Navigator.of(context).pop();
+            if(MjConstant.ad_go_type == "2"){
+
+              downloadUrlApp(context,MjConstant.ad_url);
+
+            }else if(MjConstant.ad_go_type == "1"){
+              Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>MJWeb(MjConstant.ad_url)));
+
+            }
+          },
+
+        )
+
+
+      );
+    });
+  }
   void _showProtocolDialog(BuildContext context) async{
 
     await showDialog(context: context,barrierDismissible:false,builder: (BuildContext context){
