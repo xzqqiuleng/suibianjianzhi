@@ -59,7 +59,7 @@ class _SplashState extends State<Splash> {
   }
   getState(){
     new Dio().post('http://116.62.45.24/api/appConfig/get', queryParameters: {
-      'app_id': "bbc8ea5cea6c4078b7dba74b80bf5c12",
+      'app_id': "8dd5a8739b5c485fa513c8172bd50624",
     }).then((value){
         var jsroStr =  json.decode(value.toString());
         var result = MjBean.fromJson(jsroStr["result"]);

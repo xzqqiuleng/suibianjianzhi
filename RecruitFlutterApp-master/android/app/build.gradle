@@ -54,11 +54,19 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.suibian.jobwork"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 28
-        versionCode 3
-        versionName "3.0"
+        versionCode 24
+        versionName "5.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : "com.suibian.jobwork",
+                JPUSH_APPKEY : "c617b6aa7cd0d4a17f48e2aa", 
+                JPUSH_CHANNEL : "developer-default",
+        ]
+
     }
 
     buildTypes {
